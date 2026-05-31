@@ -216,7 +216,7 @@ onClick={(event) => {
                     "
                 />
 
-                    {/* Selected outline */}
+                        {/* Selected outline */}
                         <div
                             className={`
                                 absolute
@@ -225,17 +225,14 @@ onClick={(event) => {
                                 pointer-events-none
                                 transition-all
                                 duration-300
-                                ${
-                                    isSelected
-                                        ? `
-                                            opacity-100
-                                            border-[0_0_0_1px_rgba(255,255,255,0.5),
-                                            0_0_32px_rgba(255,255,255,0.5)]
-                                            `
-                                            : 'opacity-0'
-                                  }
-                                `}
-                            />
+                                ${isSelected ? 'opacity-100 scale-100' : 'opacity-0 scale-95'}
+                            `}
+                            style={{
+                                boxShadow: isSelected 
+                                    ? 'inset 0 0 0 1px rgba(255,255,255,0.25), 0 0 32px rgba(255,255,255,0.15)' 
+                                    : 'none'
+                            }}
+                        />
 
                                 {/* Animated border */}
                 {isSelected && (

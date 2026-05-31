@@ -9,7 +9,7 @@ function App() {
   const [showControlsHint, setShowControlsHint] =
     useState(true);
 
-  const [isCarouselFocused, setIsCarouselFocused] = useState(false);
+  const [isCarouselFocused, setIsCarouselFocused] = useState(true);
 
   const [didDrag, setDidDrag] =
     useState(false);
@@ -44,73 +44,60 @@ function App() {
   }, []);
 
   useEffect(() => {
-    const handleKeyDown = (
-      event: KeyboardEvent
-    ) => {
+  const handleKeyDown = (event: KeyboardEvent) => {
       if (!isCarouselFocused) return;
 
-      if (event.key === 'ArrowRight') {
-
-        if (selectedIndex === -1) {
-          setSelectedIndex(
-            lastSelectedIndex
-          );
-          return;
+      switch (event.key) {
+        case 'ArrowRight': {
+          if (selectedIndex === -1) {
+            setSelectedIndex(lastSelectedIndex);
+            return;
+          }
+          const next = selectedIndex === projects.length - 1 ? 0 : selectedIndex + 1;
+          setSelectedIndex(next);
+          setLastSelectedIndex(next);
+          break;
         }
 
-        const next =
-          selectedIndex ===
-            projects.length - 1
-            ? 0
-            : selectedIndex + 1;
-
-        setSelectedIndex(next);
-        setLastSelectedIndex(next);
-      }
-
-      if (event.key === 'ArrowLeft') {
-
-        if (selectedIndex === -1) {
-          setSelectedIndex(
-            lastSelectedIndex
-          );
-          return;
+        case 'ArrowLeft': {
+          if (selectedIndex === -1) {
+            setSelectedIndex(lastSelectedIndex);
+            return;
+          }
+          const next = selectedIndex === 0 ? projects.length - 1 : selectedIndex - 1;
+          setSelectedIndex(next);
+          setLastSelectedIndex(next);
+          break;
         }
 
-        const next =
-          selectedIndex === 0
-            ? projects.length - 1
-            : selectedIndex - 1;
+        case 'ArrowDown':
+          setSelectedIndex(-1);
+          // Optional: Don't unfocus completely, just deselect card so idle background shows
+          break;
 
-        setSelectedIndex(next);
-        setLastSelectedIndex(next);
+        case 'ArrowUp':
+          if (selectedIndex === -1) {
+            // Only select the last card if nothing is currently active
+            setSelectedIndex(lastSelectedIndex);
+          } else {
+            // Future-proofing: If a card IS active, let ArrowUp escape the carousel
+            console.log('Navigate up to global menu');
+          }
+          break;
+
+        case 'Escape':
+          setSelectedIndex(-1);
+          break;
+
+        case 'Enter':
+          if (selectedIndex !== -1) {
+            console.log('open project:', projects[selectedIndex].title);
+          }
+          break;
+
+        default:
+          break;
       }
-
-      if (event.key === 'ArrowDown') {
-        setSelectedIndex(-1);
-        setIsCarouselFocused(false);
-        return;
-      }
-
-      if (event.key === 'ArrowUp') {
-        setSelectedIndex(lastSelectedIndex);
-      }
-
-      if (event.key === 'Escape') {
-        setSelectedIndex(-1);
-        setIsCarouselFocused(false);
-        return;
-      }
-
-      if (
-        event.key === 'Enter' &&
-        selectedIndex !== -1
-      ) {
-        console.log('open project');
-      }
-
-      return;
-
     };
 
     window.addEventListener(
@@ -334,7 +321,7 @@ function App() {
           left: 0,
           right: 0,
         }}
-        dragElastic={0.07}
+        dragElastic={0.25}
         dragMomentum={false}
         onDrag={(_, info) => {
           dragThreshold.current =
@@ -356,6 +343,7 @@ function App() {
           return (
             <motion.div
               key={project.id}
+              layout
               className="
                                     absolute
                                     left-1/2
@@ -387,9 +375,9 @@ function App() {
               }}
               transition={{
                 type: 'spring',
-                stiffness: 115,
-                damping: 18,
-                mass: 0.9,
+                stiffness: 150,
+                damping: 24,
+                mass: 0.6,
               }}
             >
               <Card
