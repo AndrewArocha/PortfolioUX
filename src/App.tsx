@@ -1,8 +1,9 @@
 import { useEffect, useState, useRef } from 'react';
 import { motion } from 'framer-motion';
+import ProjectShowcase from './components/ProjectShowCase/ProjectShowcase';
 import type { PanInfo } from 'framer-motion';
 
-import Card from './components/Card/Card';
+import ProjectCarouselCard from './components/Card/ProjectCarouselCard';
 import projects from './data/projects';
 
 function App() {
@@ -15,6 +16,22 @@ function App() {
     useState(false);
 
   const [selectedIndex, setSelectedIndex] = useState(-1);
+
+  const [
+    openedProjectIndex,
+    setOpenedProjectIndex,
+  ] = useState<number | null>(
+    null
+  );
+
+  const [
+    interactionMode,
+    setInteractionMode,
+  ] = useState<
+    'carousel'
+    | 'menu'
+    | 'gallery'
+  >('carousel');
 
   const [lastSelectedIndex, setLastSelectedIndex] =
     useState(0);
@@ -44,7 +61,32 @@ function App() {
   }, []);
 
   useEffect(() => {
-  const handleKeyDown = (event: KeyboardEvent) => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+
+      if (
+        event.key === 'Escape' &&
+        openedProjectIndex !== null
+      ) {
+        setOpenedProjectIndex(
+          null
+        );
+
+        setSelectedIndex(
+          lastSelectedIndex
+        );
+
+        setInteractionMode(
+          'carousel'
+        );
+
+        setIsCarouselFocused(
+          true
+        );
+
+        return;
+      }
+
+
       if (!isCarouselFocused) return;
 
       switch (event.key) {
@@ -86,12 +128,20 @@ function App() {
           break;
 
         case 'Escape':
-          setSelectedIndex(-1);
+          setSelectedIndex(lastSelectedIndex);
           break;
 
         case 'Enter':
-          if (selectedIndex !== -1) {
-            console.log('open project:', projects[selectedIndex].title);
+          if (selectedIndex >= 0) {
+            setOpenedProjectIndex(
+              selectedIndex
+            );
+
+            setInteractionMode(
+              'menu'
+            );
+
+            return;
           }
           break;
 
@@ -111,7 +161,7 @@ function App() {
         handleKeyDown
       );
     };
-  }, [selectedIndex, lastSelectedIndex,]);
+  }, [selectedIndex, lastSelectedIndex, openedProjectIndex, isCarouselFocused, interactionMode]);
 
   useEffect(() => {
     setActiveBackground(
@@ -196,31 +246,33 @@ function App() {
 
   return (
 
-    <main className="relative h-screen overflow-hidden bg-[#070707]" 
-    
-    onClick={(event) => {
-    if (didDrag) return;
+    <main className="relative h-screen overflow-hidden bg-[#070707]"
 
-    const carouselZone =
-        window.innerHeight * 0.68;
+      onClick={(event) => {
+        if (openedProjectIndex !== null)
+          return;
+        if (didDrag) return;
 
-    const topSafeZone =
-        window.innerHeight * 0.18;
+        const carouselZone =
+          window.innerHeight * 0.68;
 
-    const bottomSafeZone =
-        topSafeZone + carouselZone;
+        const topSafeZone =
+          window.innerHeight * 0.18;
 
-    const clickedInsideCarousel =
-        event.clientY >= topSafeZone &&
-        event.clientY <= bottomSafeZone;
+        const bottomSafeZone =
+          topSafeZone + carouselZone;
 
-    if (
-        clickedInsideCarousel
-    )
-        return;
+        const clickedInsideCarousel =
+          event.clientY >= topSafeZone &&
+          event.clientY <= bottomSafeZone;
 
-    setSelectedIndex(-1);
-}}>
+        if (
+          clickedInsideCarousel
+        )
+          return;
+
+        setSelectedIndex(-1);
+      }}>
 
       {/* Keyboard hint */}
       <motion.div
@@ -380,7 +432,7 @@ function App() {
                 mass: 0.6,
               }}
             >
-              <Card
+              <ProjectCarouselCard
                 title={project.title}
                 image={project.image}
                 onHover={setActiveBackground}
@@ -393,8 +445,12 @@ function App() {
                   if (
                     selectedIndex === index
                   ) {
-                    console.log(
-                      'open project'
+                    setOpenedProjectIndex(
+                      index
+                    );
+
+                    setInteractionMode(
+                      'menu'
                     );
                   } else {
                     setSelectedIndex(index);
@@ -411,6 +467,31 @@ function App() {
           );
         })}
       </motion.section>
+
+      {openedProjectIndex !== null && (
+        <ProjectShowcase
+          project={projects[openedProjectIndex]}
+          interactionMode={interactionMode}
+          onClose={() => {
+            setOpenedProjectIndex(
+              null
+            );
+
+            setSelectedIndex(
+              lastSelectedIndex
+            );
+
+            setInteractionMode(
+              'carousel'
+            );
+
+            setIsCarouselFocused(
+              true
+            );
+          }}
+        />
+      )}
+
     </main>
   );
 }

@@ -20,7 +20,7 @@ function Card({
     didDrag,
 }: CardProps) {
     return (
-        <motion.div
+        <motion.div layoutId={`project-${title}`}
             whileHover={{
                 scale: 1.015,
                 y: -6,
