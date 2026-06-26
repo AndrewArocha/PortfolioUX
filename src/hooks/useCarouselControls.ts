@@ -1,9 +1,6 @@
 import { useEffect } from 'react';
 import projects from '../data/projects';
 import { useInteraction } from '../context/InteractionContext';
-import { type InteractionMode } from '../context/InteractionContext';
-
-
 
 export default function useCarouselControls() {
     const {
@@ -121,5 +118,11 @@ export default function useCarouselControls() {
         lastSelectedIndex,
         openedProjectIndex,
         isCarouselFocused,
+        interactionMode,
+        setSelectedIndex,
+        setLastSelectedIndex,
+        setInteractionMode,
+        setIsCarouselFocused,
+        setOpenedProjectIndex,
     ]);
 }
