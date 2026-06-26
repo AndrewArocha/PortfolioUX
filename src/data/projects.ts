@@ -4,11 +4,9 @@ type Project = {
     id: number;
     title: string;
     image: string;
-
     description?: string;
-
     stack?: Array<keyof typeof techStack>;
-
+    gallery?: string[];
     githubUrl?: string;
     liveDemoUrl?: string;
 };
@@ -28,6 +26,14 @@ const projects: Project[] = [
             'typescript',
             'tailwind',
         ],
+
+        gallery: [
+        'https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=1200', // Hero image
+        'https://images.unsplash.com/photo-1499856871958-5b9627545d1a?w=1200', // Paris
+        'https://images.unsplash.com/photo-1512453979798-5ea266f8880c?w=1200', // Dubai
+        'https://images.unsplash.com/photo-1496442226666-8d4d0e62e6e9?w=1200', // NYC
+        'https://plus.unsplash.com/premium_photo-1733306480053-867019b115d0?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D' // Vermont
+    ],
 
         githubUrl: '',
         liveDemoUrl: '',

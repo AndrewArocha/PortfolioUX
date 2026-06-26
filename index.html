@@ -1,13 +1,36 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>portfolioux</title>
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
-  </body>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Andrés Hernández | Developer</title>
+  <style>
+    html, body {
+      background-color: #070707 !important;
+      margin: 0;
+      padding: 0;
+      height: 100%;
+    }
+    .fallback-loader {
+      height: 100vh;
+      width: 100vw;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-color: #070707;
+      transition: opacity 0.3s ease;
+    }
+    /* Pulsating animation for the logo */
+    @keyframes pulse { 0%, 100% { opacity: 0.3; } 50% { opacity: 1; } }
+    .pulsate { animation: pulse 2s infinite ease-in-out; }
+  </style>
+</head>
+<body>
+  <div id="root">
+    <div class="fallback-loader">
+      <img src="./src/assets/logo/mainLogoAccent.svg" alt="Logo" class="pulsate" style="width: 80px; height: 80px;" />
+    </div>
+  </div>
+  <script type="module" src="/src/main.tsx"></script>
+</body>
 </html>
