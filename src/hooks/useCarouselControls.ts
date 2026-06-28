@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import projects from '../data/projects';
 import { useInteraction } from '../context/InteractionContext';
+import { playBack } from '../utils/soundEngine';
 
 export default function useCarouselControls() {
     const {
@@ -80,8 +81,10 @@ export default function useCarouselControls() {
                     if (selectedIndex !== -1) {
                         // Deselect currently focused card first
                         setSelectedIndex(-1);
+                        playBack();
                     } else {
                         // No card selected anymore → return to Hub
+                        playBack();
                         setInteractionMode('hub');
                         setIsCarouselFocused(false);
                     }

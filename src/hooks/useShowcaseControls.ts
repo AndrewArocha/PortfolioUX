@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import { useInteraction } from '../context/InteractionContext';
+import { playBack } from '../utils/soundEngine';
 
 export default function useShowcaseControls() {
   const {
@@ -19,6 +20,7 @@ export default function useShowcaseControls() {
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key !== 'Escape') return;
 
+      playBack()
       setOpenedProjectIndex(null);
       setSelectedIndex(lastSelectedIndex);
 

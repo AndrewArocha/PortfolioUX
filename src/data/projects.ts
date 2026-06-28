@@ -35,7 +35,7 @@ const projects: Project[] = [
         'https://plus.unsplash.com/premium_photo-1733306480053-867019b115d0?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D' // Vermont
     ],
 
-        githubUrl: '',
+        githubUrl: 'https://github.com/AndrewArocha/web_project_around_es',
         liveDemoUrl: '',
     },
 
@@ -53,6 +53,9 @@ const projects: Project[] = [
             'javascript',
             'tailwind',
         ],
+
+        githubUrl: 'https://github.com/AndrewArocha/web_project_coffeeshop_es',
+        liveDemoUrl: '',
     },
 
     {
@@ -69,6 +72,8 @@ const projects: Project[] = [
             'vite',
             'tailwind',
         ],
+        githubUrl:'https://github.com/AndrewArocha/BDC-Report-maker/tree/vite-tailwind-refactor',
+        liveDemoUrl:'',
     },
 ];
 

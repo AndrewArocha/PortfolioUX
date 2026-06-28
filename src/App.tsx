@@ -11,6 +11,7 @@ import projects from "./data/projects";
 import useCarouselControls from "./hooks/useCarouselControls";
 import useShowcaseControls from "./hooks/useShowcaseControls";
 import { useInteraction } from "./context/InteractionContext";
+import { playCardScroll, playBack } from "./utils/soundEngine";
 
 function App() {
   const {
@@ -42,10 +43,23 @@ function App() {
   const dragThreshold = useRef(false);
   const pointerDownTime = useRef(0);
 
+  const initialCarouselMount = useRef(true);
+  
+  useEffect(() => {
+    if (initialCarouselMount.current) { 
+      initialCarouselMount.current = false; 
+      return; 
+    }
+    // Anytime the selected project changes, play the dial tick!
+    if (selectedIndex >= 0) {
+      playCardScroll();
+    }
+  }, [selectedIndex]);
+
   const idleBackground =
     "https://static.vecteezy.com/system/resources/thumbnails/072/203/042/small/scenic-mountain-view-at-sunset-with-vibrant-sky-and-green-hills-free-photo.jpg";
 
-  // 1. DERIVED STATE (Fixes ESLint error completely)
+  // 1. DERIVED STATE (ESLint)
   const [hoveredBackground, setHoveredBackground] = useState<string | null>(
     null,
   );
@@ -106,6 +120,7 @@ function App() {
       (offsetX > 80 || velocityX > 400) &&
       interactionMode === "carousel"
     ) {
+      playBack();
       setInteractionMode("hub");
       setIsCarouselFocused(false);
       setSelectedIndex(-1);
@@ -130,6 +145,7 @@ function App() {
 
       setSelectedIndex(nextIndex);
       setLastSelectedIndex(nextIndex);
+      playCardScroll();
     }
   };
 
@@ -262,6 +278,7 @@ function App() {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -8 }}
               onClick={() => {
+                playBack();
                 setInteractionMode("hub");
                 setIsCarouselFocused(false);
                 setSelectedIndex(-1);

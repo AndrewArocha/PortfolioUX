@@ -1,11 +1,13 @@
 import { motion } from "framer-motion";
-import { techStack } from "../../data/techStack"; // <-- Added import
+import { techStack } from "../../data/techStack";
+import { playHover, playModalOpen } from "../../utils/soundEngine";
 
+//Strict typing gave me a headache, set String | null
 type CardProps = {
   title: string;
   image: string;
-  stack?: Array<keyof typeof techStack>; // <-- Added stack to props
-  onHover: (image: string | null) => void; // <-- Fixed null type
+  stack?: Array<keyof typeof techStack>; 
+  onHover: (image: string | null) => void; 
   onHoverEnd: () => void;
   onSelect: () => void;
   isSelected?: boolean;
@@ -15,7 +17,7 @@ type CardProps = {
 function Card({
   title,
   image,
-  stack, // <-- Destructured stack
+  stack, 
   onHover,
   onHoverEnd,
   onSelect,
@@ -29,6 +31,7 @@ function Card({
         whileHover={{ scale: 1.015, y: -6 }}
         onHoverStart={() => {
           if (!isSelected) return;
+          playHover(); // <--- Drop this right here!
           onHover(image);
         }}
         onHoverEnd={onHoverEnd}
@@ -36,6 +39,7 @@ function Card({
           event.stopPropagation();
           if (didDrag) return;
           onSelect();
+          playModalOpen();
         }}
         animate={{ y: isSelected ? -10 : 0 }}
         transition={{ type: "spring", stiffness: 180, damping: 22 }}
@@ -115,7 +119,7 @@ function Card({
           {/* Content Layer (Restored Layout with Tech Stack) */}
           <div className="relative z-10 flex h-full flex-col justify-end p-8 sm:p-10">
             <div className="flex w-full items-end justify-between gap-4">
-              
+
               {/* Title Section */}
               <div className="max-w-[70%]">
                 <p className="mb-2 text-[10px] sm:text-xs uppercase tracking-[0.35em] text-white/45">
@@ -139,10 +143,10 @@ function Card({
                         style={{ zIndex: 10 - i }}
                       >
                         {tech?.icon ? (
-                          <img 
-                            src={tech.icon} 
-                            alt={tech.name} 
-                            className="h-3.5 w-3.5 sm:h-4 sm:w-4 object-contain opacity-80" 
+                          <img
+                            src={tech.icon}
+                            alt={tech.name}
+                            className="h-3.5 w-3.5 sm:h-4 sm:w-4 object-contain opacity-80"
                           />
                         ) : (
                           <span className="text-[8px] font-medium text-white/70">
@@ -152,10 +156,10 @@ function Card({
                       </div>
                     );
                   })}
-                  
+
                   {/* The overflow bubble (+X) */}
                   {stack.length > 4 && (
-                    <div 
+                    <div
                       className="flex h-7 w-7 sm:h-9 sm:w-9 items-center justify-center rounded-full border border-white/20 bg-black/60 backdrop-blur-md text-[9px] sm:text-[10px] font-medium text-white/80"
                       style={{ zIndex: 5 }}
                     >
@@ -164,7 +168,7 @@ function Card({
                   )}
                 </div>
               )}
-              
+
             </div>
           </div>
         </div>
