@@ -1,73 +1,60 @@
-# React + TypeScript + Vite
+# Andrés Hernández | UI Engineer Portfolio
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A cinematic, highly interactive portfolio built to mimic a modern, tactile operating system. This project serves as both a showcase of my frontend engineering capabilities and a demonstration of deep UX philosophy, featuring custom physics, spatial audio feedback, and seamless state-driven navigation.
 
-Currently, two official plugins are available:
+![Portfolio Preview](./public/mainLogoAccent.svg) 
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## 🚀 Key Features
 
-## React Compiler
+* **Custom Sound Engine:** A centralized, global audio manager that syncs tactile UI sounds (typewriter boot sequence, mechanical dial clicks, ambient deep-space hums) to user interactions.
+* **Framer Motion Physics:** Complex gesture controls including mobile swipe-to-close overlays, spring-physics carousel tracking, and interactive 3D revolving galleries.
+* **4-Stage Boot Sequence:** A cinematic loading experience that guarantees asset extraction and bypasses strict browser autoplay policies for audio synchronization.
+* **Non-Destructive Routing:** Custom built `RedirectModal` logic with soft-retention timers that allow users to preview external links while maintaining the portfolio's state in the background.
+* **Dual-Timezone Synchronization:** Live, ticking clocks comparing the user's local system time to my operating base in Medellín, complete with reactive day/night visual states.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## 🛠️ Tech Stack
 
-## Expanding the ESLint configuration
+* **Core:** React 18 + Vite
+* **Language:** TypeScript
+* **Styling:** Tailwind CSS
+* **Animation:** Framer Motion
+* **State Management:** React Context API + Custom Hooks (`useInteraction`, `useCarouselControls`)
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## 📂 Project Architecture
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+The application is structured as a Single Page Application (SPA), utilizing a master `App.tsx` controller to securely mount and unmount "layers" (Carousel, Hub, Showcase) without relying on traditional URL routing.
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+```text
+src/
+├── components/          # Feature-grouped component architecture
+│   ├── Card/            # Interactive carousel items
+│   ├── HomeHub/         # Master UI dashboard and layout
+│   ├── Modals/          # Global overlays (Contact, Resume, Redirect)
+│   ├── ProjectShowCase/ # Deep-dive view for specific repositories
+│   └── UI/              # Boot sequence and asset managers
+├── context/             # Global state (InteractionContext)
+├── data/                # Hardcoded tech stack and project payloads
+├── hooks/               # Extracted logic (useImagePreloader, useHubControls)
+└── utils/               # Global engines (soundEngine.ts)
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+💻 Local Development
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+To run this project locally:
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+Clone the repository:
+git clone [https://github.com/AndrewArocha/portfolio-os.git](https://github.com/AndrewArocha/portfolio-os.git)
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+Navigate into the directory:
+cd portfolio-os
+
+Install dependencies:
+npm install
+
+npm run dev
+
+📬 Contact & Links
+LinkedIn: Andrés Hernández
+
+GitHub: AndrewArocha
+
+Built with attention to detail.
