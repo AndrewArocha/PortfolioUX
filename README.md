@@ -4,7 +4,7 @@ A cinematic, highly interactive portfolio built to mimic a modern, tactile opera
 
 **[Live Portfolio OS](https://portfolio-ux-beta.vercel.app/)**
 
-(./public/mainLogoAccent.svg) 
+[![Portfolio Logo](./public/mainLogoAccent.svg)](https://portfolio-ux-beta.vercel.app/)
 
 ## 🚀 Key Features
 
