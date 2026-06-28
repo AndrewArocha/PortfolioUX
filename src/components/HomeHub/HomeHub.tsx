@@ -1,12 +1,12 @@
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 import { motion, AnimatePresence, type Variants } from "framer-motion";
 import { useInteraction } from "../../context/InteractionContext";
 import useHubControls from "../../hooks/useHubControls";
 import mainLogoAccent from "../../assets/logo/mainLogoAccent.svg";
 import profilePic from "../../assets/profilePic.png";
-// THE FIX: Included playBack import
-import { playHover, playModalOpen, playBack } from "../../utils/soundEngine";
-
+// THE FIX: Added playDownload
+import { playHover, playModalOpen, playBack, playDownload } from "../../utils/soundEngine";
+import ContactModal from "../Modals/ContactModal";
 
 const containerVariants: Variants = {
   hidden: { opacity: 0 },
@@ -28,27 +28,25 @@ export default function HomeHub() {
   const [medellinTime, setMedellinTime] = useState("");
   const [visitorTime, setVisitorTime] = useState("");
   const [isMedellinDaytime, setIsMedellinDaytime] = useState(true);
+  const [isAvailable, setIsAvailable] = useState(true);
 
   const [isAboutOpen, setIsAboutOpen] = useState(false);
   const [isTimezoneOpen, setIsTimezoneOpen] = useState(false);
   const [isResumeOpen, setIsResumeOpen] = useState(false);
   const [isContactOpen, setIsContactOpen] = useState(false);
 
-  const [contactForm, setContactForm] = useState({ name: "", email: "", message: "" });
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submitStatus, setSubmitStatus] = useState<"idle" | "success" | "error">("idle");
+  const initialHubMount = useRef(true);
 
-  // THE FIX: Listen for secret sessionStorage messages from ProjectShowcase
   useEffect(() => {
     const autoOpen = sessionStorage.getItem('hubAutoOpen');
     if (autoOpen) {
       setTimeout(() => {
-        playModalOpen(); // Fire the sound!
+        playModalOpen();
         if (autoOpen === 'resume') { setHubIndex(3); setIsResumeOpen(true); }
         if (autoOpen === 'about') { setHubIndex(0); setIsAboutOpen(true); }
         if (autoOpen === 'contact') { setHubIndex(4); setIsContactOpen(true); }
         sessionStorage.removeItem('hubAutoOpen');
-      }, 150); 
+      }, 150);
     }
   }, [setHubIndex]);
 
@@ -67,6 +65,7 @@ export default function HomeHub() {
       setMedellinTime(medellinStr);
       const medellinHour = parseInt(new Intl.DateTimeFormat("en-US", { timeZone: "America/Bogota", hour: "numeric", hour12: false }).format(now), 10);
       setIsMedellinDaytime(medellinHour >= 6 && medellinHour < 18);
+      setIsAvailable(medellinHour >= 7 && medellinHour < 21);
       const visitorStr = new Intl.DateTimeFormat("en-US", { hour: "2-digit", minute: "2-digit", hour12: true }).format(now);
       setVisitorTime(visitorStr);
     };
@@ -75,29 +74,28 @@ export default function HomeHub() {
     return () => clearInterval(interval);
   }, []);
 
+  useEffect(() => {
+    if (initialHubMount.current) {
+      initialHubMount.current = false;
+      return;
+    }
+    playHover();
+  }, [hubIndex]);
+
   const handleOpenCarousel = useCallback(() => {
     setInteractionMode("carousel");
     setIsCarouselFocused(true);
     setSelectedIndex(lastSelectedIndex >= 0 ? lastSelectedIndex : 0);
   }, [setInteractionMode, setIsCarouselFocused, setSelectedIndex, lastSelectedIndex]);
 
-  const handleContactSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsSubmitting(true);
-    setTimeout(() => {
-      setIsSubmitting(false);
-      setSubmitStatus("success");
-      setContactForm({ name: "", email: "", message: "" });
-      setTimeout(() => setSubmitStatus("idle"), 3000);
-    }, 1500);
-  };
+
 
   useEffect(() => {
     const handleHubEnter = (e: KeyboardEvent) => {
       const isAnyModalOpen = isAboutOpen || isTimezoneOpen || isResumeOpen || isContactOpen;
 
       if (e.key === "Enter" && !isAnyModalOpen) {
-        playModalOpen(); // THE FIX: Sound on Keyboard Enter
+        playModalOpen();
         if (hubIndex === 0) setIsAboutOpen(true);
         if (hubIndex === 1) handleOpenCarousel();
         if (hubIndex === 2) setIsTimezoneOpen(true);
@@ -106,7 +104,7 @@ export default function HomeHub() {
       }
 
       if (e.key === "Escape") {
-        if (isAnyModalOpen) playBack(); // THE FIX: Sound on Keyboard Escape
+        if (isAnyModalOpen) playBack();
         setIsAboutOpen(false);
         setIsTimezoneOpen(false);
         setIsResumeOpen(false);
@@ -134,9 +132,12 @@ export default function HomeHub() {
               </div>
               <span className="text-[10px] md:text-xs uppercase tracking-[0.3em] font-semibold text-white/50">Portfolio OS</span>
             </div>
+
             <div className="flex items-center gap-2 px-3 md:px-4 py-2 rounded-full bg-white/5 border border-white/10 backdrop-blur-md">
-              <div className="w-1.5 h-1.5 md:w-2 md:h-2 rounded-full bg-teal-400 animate-pulse" />
-              <span className="text-[9px] md:text-[11px] uppercase tracking-widest text-teal-400/80 font-medium">Available</span>
+              <div className={`w-1.5 h-1.5 md:w-2 md:h-2 rounded-full animate-pulse ${isAvailable ? "bg-teal-400" : "bg-[#FBBF24]"}`} />
+              <span className={`text-[9px] md:text-[11px] uppercase tracking-widest font-medium ${isAvailable ? "text-teal-400/80" : "text-[#FBBF24]/80"}`}>
+                {isAvailable ? "Available" : "AFK"}
+              </span>
             </div>
           </motion.header>
 
@@ -145,7 +146,7 @@ export default function HomeHub() {
             <motion.button
               variants={itemVariants}
               onClick={() => { playModalOpen(); setHubIndex(0); setIsAboutOpen(true); }}
-              onHoverStart={() => { playHover(); setHubIndex(0); }}
+              onHoverStart={() => { setHubIndex(0); }}
               whileHover={{ scale: 0.99 }} whileTap={{ scale: 0.98 }} style={{ x: mousePosition.x * 0.3, y: mousePosition.y * 0.3 }}
               className={`col-span-2 row-span-2 md:col-span-8 relative overflow-hidden rounded-4xl md:rounded-[40px] p-6 md:p-10 flex flex-col justify-center text-left transition-all duration-300 cursor-pointer ${hubIndex === 0 ? "border-2 border-teal-500/50 bg-teal-500/10 shadow-[0_0_40px_rgba(45,212,191,0.15)]" : "border border-white/10 bg-white/2 hover:bg-white/4 backdrop-blur-xl"}`}
             >
@@ -160,7 +161,7 @@ export default function HomeHub() {
             <motion.button
               variants={itemVariants}
               onClick={() => { playModalOpen(); setHubIndex(1); handleOpenCarousel(); }}
-              onHoverStart={() => { playHover(); setHubIndex(1); }}
+              onHoverStart={() => { setHubIndex(1); }}
               whileHover={{ scale: 0.98 }} whileTap={{ scale: 0.95 }}
               className={`col-span-1 row-span-1 md:col-span-4 md:row-span-2 relative group overflow-hidden rounded-4xl md:rounded-[40px] p-4 md:p-0 flex flex-col items-center justify-center cursor-pointer transition-all duration-300 ${hubIndex === 1 ? "border-2 border-white/40 bg-white/10 shadow-[0_0_30px_rgba(255,255,255,0.1)]" : "border border-white/10 bg-linear-to-br from-[#1a1a1a] to-[#0a0a0a]"}`}
             >
@@ -176,7 +177,7 @@ export default function HomeHub() {
             <motion.button
               variants={itemVariants}
               onClick={() => { playModalOpen(); setHubIndex(2); setIsTimezoneOpen(true); }}
-              onHoverStart={() => { playHover(); setHubIndex(2); }}
+              onHoverStart={() => { setHubIndex(2); }}
               whileHover={{ scale: 0.98 }} whileTap={{ scale: 0.95 }}
               className={`col-span-1 row-span-1 md:col-span-4 p-5 md:p-6 relative overflow-hidden rounded-4xl md:rounded-4xl flex flex-col md:flex-row items-start md:items-center justify-center md:justify-start gap-2 md:gap-6 text-left transition-all duration-300 cursor-pointer ${hubIndex === 2 ? "border-2 border-orange-500/50 bg-orange-500/10" : "border border-white/10 bg-white/2 hover:bg-white/4 backdrop-blur-md"}`}
             >
@@ -192,7 +193,7 @@ export default function HomeHub() {
             <motion.button
               variants={itemVariants}
               onClick={() => { playModalOpen(); setHubIndex(3); setIsResumeOpen(true); }}
-              onHoverStart={() => { playHover(); setHubIndex(3); }}
+              onHoverStart={() => { setHubIndex(3); }}
               whileHover={{ scale: 0.98 }} whileTap={{ scale: 0.95 }}
               className={`col-span-1 row-span-1 md:col-span-4 p-5 md:p-6 relative overflow-hidden rounded-4xl md:rounded-4xl flex flex-col md:flex-row items-start md:items-center justify-center md:justify-between gap-3 md:gap-0 transition-all duration-300 cursor-pointer ${hubIndex === 3 ? "border-2 border-white/40 bg-white/10" : "border border-white/10 bg-white/2 hover:bg-white/4"}`}
             >
@@ -209,7 +210,7 @@ export default function HomeHub() {
             <motion.button
               variants={itemVariants}
               onClick={() => { playModalOpen(); setHubIndex(4); setIsContactOpen(true); }}
-              onHoverStart={() => { playHover(); setHubIndex(4); }}
+              onHoverStart={() => { setHubIndex(4); }}
               whileHover={{ scale: 0.98 }} whileTap={{ scale: 0.95 }}
               className={`col-span-1 row-span-1 md:col-span-4 p-5 md:p-6 relative overflow-hidden rounded-4xl md:rounded-4xl flex flex-col md:flex-row items-start md:items-center justify-center md:justify-between gap-3 md:gap-0 transition-all duration-300 cursor-pointer ${hubIndex === 4 ? "border-2 border-white/40 bg-white/10" : "border border-white/10 bg-white/2 hover:bg-white/4"}`}
             >
@@ -228,16 +229,30 @@ export default function HomeHub() {
       <AnimatePresence>
         {/* ABOUT ME MODAL */}
         {isAboutOpen && (
-          <motion.div initial={{ opacity: 0, backdropFilter: "blur(0px)" }} animate={{ opacity: 1, backdropFilter: "blur(20px)" }} exit={{ opacity: 0, backdropFilter: "blur(0px)" }} className="fixed inset-0 z-100 flex items-center justify-center bg-black/60 p-4 md:p-6" onClick={() => { playBack(); setIsAboutOpen(false); }}>
+          <motion.div initial={{ opacity: 0, backdropFilter: "blur(0px)" }} animate={{ opacity: 1, backdropFilter: "blur(20px)" }} exit={{ opacity: 0, backdropFilter: "blur(0px)" }} className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 p-4 md:p-6" onClick={() => { playBack(); setIsAboutOpen(false); }}>
             <motion.div initial={{ scale: 0.9, y: 20 }} animate={{ scale: 1, y: 0 }} exit={{ scale: 0.95, y: 10 }} onClick={(e) => e.stopPropagation()} className="relative w-full max-w-2xl max-h-[85vh] overflow-y-auto custom-scrollbar rounded-4xl md:rounded-[40px] border border-white/10 bg-[#0f0f0f]/95 p-6 md:p-10 shadow-2xl">
               <div className="absolute top-0 left-0 w-full h-1 bg-linear-to-r from-teal-400 to-orange-400" />
               <div className="flex flex-col md:flex-row items-start gap-6 md:gap-8">
+
+                {/* THE FIX: Breathing Image restored! */}
                 <div className="flex flex-row md:flex-col items-center md:items-start gap-5 w-full md:w-auto shrink-0">
-                  <div className="shrink-0 w-24 h-32 md:w-48 md:h-64 rounded-2xl md:rounded-3xl overflow-hidden border border-white/10 shadow-[0_0_30px_rgba(255,255,255,0.05)]">
-                    <img src={profilePic} alt="Andrés Hernández" className="w-full h-full object-cover object-top" />
+                  <div className="shrink-0 w-24 h-32 md:w-48 md:h-64 rounded-2xl md:rounded-3xl overflow-hidden border border-white/10 shadow-[0_0_30px_rgba(45,212,191,0.15)]">
+                    {/* THE FIX: The true cinematic parallax pan! */}
+                    <motion.img
+                      initial={{ scale: 1.025 }}
+                      animate={{
+                        x: ["-1.5%", "1.5%", "-1.5%"],
+                        y: ["-0.75%", "0.75%", "-0.75%"]
+                      }}
+                      transition={{ repeat: Infinity, duration: 12, ease: "easeInOut" }}
+                      src={profilePic}
+                      alt="Andrés Hernández"
+                      className="w-full h-full object-cover object-top origin-center"
+                    />
                   </div>
-                  <h2 className="md:hidden text-3xl font-bold tracking-tight text-white">The Human <br/><span className="text-teal-400">Layer</span></h2>
+                  <h2 className="md:hidden text-3xl font-bold tracking-tight text-white">The Human <br /><span className="text-teal-400">Layer</span></h2>
                 </div>
+
                 <div className="flex-1">
                   <h2 className="hidden md:block text-4xl font-bold tracking-tight text-white mb-6">The Human <span className="text-teal-400">Layer</span></h2>
                   <div className="space-y-3 md:space-y-4 text-white/70 leading-relaxed text-xs md:text-sm">
@@ -248,8 +263,25 @@ export default function HomeHub() {
                   </div>
                 </div>
               </div>
-              <div className="mt-8 flex justify-end">
-                <button onClick={() => { playBack(); setIsAboutOpen(false); }} className="rounded-full border border-white/20 bg-white/5 px-6 py-2 text-sm font-medium text-white transition-colors hover:bg-white/10 cursor-pointer">Close Profile</button>
+              {/* Resume button and Close button */}
+              <div className="mt-8 flex justify-between items-center">
+                <button
+                  onClick={() => {
+                    playModalOpen();
+                    setIsAboutOpen(false);
+                    setHubIndex(3);
+                    setIsResumeOpen(true);
+                  }}
+                  className="rounded-full border border-teal-500/50 bg-teal-500/10 px-6 py-2 text-sm font-medium text-teal-400 transition-colors hover:bg-teal-500/20 cursor-pointer"
+                >
+                  View Resume
+                </button>
+                <button
+                  onClick={() => { playBack(); setIsAboutOpen(false); }}
+                  className="rounded-full border border-white/20 bg-white/5 px-6 py-2 text-sm font-medium text-white transition-colors hover:bg-white/10 cursor-pointer"
+                >
+                  Close Profile
+                </button>
               </div>
             </motion.div>
           </motion.div>
@@ -257,7 +289,7 @@ export default function HomeHub() {
 
         {/* TIMEZONE MODAL */}
         {isTimezoneOpen && (
-          <motion.div initial={{ opacity: 0, backdropFilter: "blur(0px)" }} animate={{ opacity: 1, backdropFilter: "blur(20px)" }} exit={{ opacity: 0, backdropFilter: "blur(0px)" }} className="fixed inset-0 z-100 flex items-center justify-center bg-black/60 p-6" onClick={() => { playBack(); setIsTimezoneOpen(false); }}>
+          <motion.div initial={{ opacity: 0, backdropFilter: "blur(0px)" }} animate={{ opacity: 1, backdropFilter: "blur(20px)" }} exit={{ opacity: 0, backdropFilter: "blur(0px)" }} className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 p-6" onClick={() => { playBack(); setIsTimezoneOpen(false); }}>
             <motion.div initial={{ scale: 0.9, y: 20 }} animate={{ scale: 1, y: 0 }} exit={{ scale: 0.95, y: 10 }} onClick={(e) => e.stopPropagation()} className="relative w-full max-w-md rounded-[40px] border border-white/10 bg-[#0f0f0f]/90 p-10 shadow-2xl flex flex-col items-center">
               <h2 className="text-2xl font-bold tracking-tight text-white mb-2">Time Synchronization</h2>
               <p className="text-sm text-white/50 mb-8 text-center">Comparing local system time to operating base.</p>
@@ -286,7 +318,7 @@ export default function HomeHub() {
 
         {/* RESUME MODAL */}
         {isResumeOpen && (
-          <motion.div initial={{ opacity: 0, backdropFilter: "blur(0px)" }} animate={{ opacity: 1, backdropFilter: "blur(20px)" }} exit={{ opacity: 0, backdropFilter: "blur(0px)" }} className="fixed inset-0 z-100 flex items-center justify-center bg-black/60 p-4 md:p-6" onClick={() => { playBack(); setIsResumeOpen(false); }}>
+          <motion.div initial={{ opacity: 0, backdropFilter: "blur(0px)" }} animate={{ opacity: 1, backdropFilter: "blur(20px)" }} exit={{ opacity: 0, backdropFilter: "blur(0px)" }} className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 p-4 md:p-6" onClick={() => { playBack(); setIsResumeOpen(false); }}>
             <motion.div initial={{ scale: 0.9, y: 20 }} animate={{ scale: 1, y: 0 }} exit={{ scale: 0.95, y: 10 }} onClick={(e) => e.stopPropagation()} className="relative w-full max-w-5xl max-h-[90vh] overflow-y-auto rounded-[40px] border border-white/10 bg-[#0f0f0f]/95 p-8 md:p-12 shadow-2xl custom-scrollbar">
               <div className="absolute top-0 left-0 w-full h-1 bg-linear-to-r from-teal-400 to-orange-400" />
               <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
@@ -294,11 +326,21 @@ export default function HomeHub() {
                   <h2 className="text-4xl md:text-5xl font-bold tracking-tight text-white mb-2">Technical <span className="text-teal-400">Profile</span></h2>
                   <p className="text-white/50 tracking-widest uppercase text-sm">Experience & Capabilities</p>
                 </div>
-                <a href="/AndresHernandez_Web-Developer-Resume.pdf" download="AndresHernandez_Web-Developer-Resume.pdf" target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 rounded-full border border-orange-500/50 bg-orange-500/10 px-6 py-3 text-sm font-medium text-orange-400 transition-colors hover:bg-orange-500/20 w-fit">
+
+                {/* THE FIX: Download sound restored! */}
+                <a
+                  href="/AndresHernandez_Web-Developer-Resume.pdf"
+                  download="AndresHernandez_Web-Developer-Resume.pdf"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={() => playDownload()}
+                  className="flex items-center gap-3 rounded-full border border-orange-500/50 bg-orange-500/10 px-6 py-3 text-sm font-medium text-orange-400 transition-colors hover:bg-orange-500/20 w-fit"
+                >
                   <svg viewBox="0 0 24 24" className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" /><polyline points="7 10 12 15 17 10" /><line x1="12" y1="15" x2="12" y2="3" /></svg>
                   Download Original PDF
                 </a>
               </div>
+
               <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
                 <div className="lg:col-span-4 space-y-8">
                   <div>
@@ -360,71 +402,25 @@ export default function HomeHub() {
         )}
 
         {/* CONTACT MODAL */}
-        {isContactOpen && (
-          <motion.div initial={{ opacity: 0, backdropFilter: "blur(0px)" }} animate={{ opacity: 1, backdropFilter: "blur(20px)" }} exit={{ opacity: 0, backdropFilter: "blur(0px)" }} className="fixed inset-0 z-100 flex items-center justify-center bg-black/60 p-4 md:p-6" onClick={() => { playBack(); setIsContactOpen(false); }}>
-            <motion.div initial={{ scale: 0.9, y: 20 }} animate={{ scale: 1, y: 0 }} exit={{ scale: 0.95, y: 10 }} onClick={(e) => e.stopPropagation()} className="relative w-full max-w-4xl rounded-[40px] border border-white/10 bg-[#0f0f0f]/95 p-8 md:p-12 shadow-2xl overflow-hidden">
-              <div className="absolute top-0 left-0 w-full h-1 bg-linear-to-r from-orange-400 to-teal-400" />
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
-                <div className="flex flex-col justify-between">
-                  <div>
-                    <h2 className="text-4xl font-bold tracking-tight text-white mb-2">Let's <span className="text-orange-400">Connect</span></h2>
-                    <p className="text-white/50 text-sm mb-8">Reach out across the net or send a direct encrypted transmission via the form.</p>
-                    <div className="space-y-4">
-                      <a href="https://www.linkedin.com/in/andres-hernandez-333b59282" target="_blank" rel="noopener noreferrer" className="flex items-center gap-4 p-4 rounded-2xl border border-white/10 bg-white/5 hover:bg-white/10 transition-colors group">
-                        <div className="w-10 h-10 rounded-full bg-[#0077b5]/20 text-[#0077b5] flex items-center justify-center group-hover:scale-110 transition-transform">
-                          <svg viewBox="0 0 24 24" className="w-5 h-5 fill-current"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" /></svg>
-                        </div>
-                        <div>
-                          <p className="text-sm font-semibold text-white group-hover:text-[#0077b5] transition-colors">LinkedIn Profile</p>
-                          <p className="text-xs text-white/40">Professional network & history</p>
-                        </div>
-                      </a>
-                      <a href="https://github.com/AndrewArocha" target="_blank" rel="noopener noreferrer" className="flex items-center gap-4 p-4 rounded-2xl border border-white/10 bg-white/5 hover:bg-white/10 transition-colors group">
-                        <div className="w-10 h-10 rounded-full bg-white/10 text-white flex items-center justify-center group-hover:scale-110 transition-transform">
-                          <svg viewBox="0 0 24 24" className="w-5 h-5 fill-current"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12" /></svg>
-                        </div>
-                        <div>
-                          <p className="text-sm font-semibold text-white group-hover:text-white/80 transition-colors">GitHub Repositories</p>
-                          <p className="text-xs text-white/40">Codebases & open source</p>
-                        </div>
-                      </a>
-                      <a href="https://discord.com/users/1035044496410423336" target="_blank" rel="noopener noreferrer" className="flex items-center gap-4 p-4 rounded-2xl border border-white/10 bg-white/5 hover:bg-white/10 transition-colors group">
-                        <div className="w-10 h-10 rounded-full bg-[#5865F2]/20 text-[#5865F2] flex items-center justify-center group-hover:scale-110 transition-transform">
-                          <svg viewBox="0 0 24 24" className="w-5 h-5 fill-current"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.028zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z" /></svg>
-                        </div>
-                        <div>
-                          <p className="text-sm font-semibold text-white group-hover:text-[#5865F2] transition-colors">Discord Connect</p>
-                          <p className="text-xs text-white/40">Casual networking & chat</p>
-                        </div>
-                      </a>
-                    </div>
-                  </div>
-                </div>
-                <div className="bg-white/5 border border-white/10 rounded-4xl p-8">
-                  {submitStatus === "success" ? (
-                    <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="h-full flex flex-col items-center justify-center text-center">
-                      <div className="w-16 h-16 rounded-full bg-teal-500/20 text-teal-400 flex items-center justify-center mb-4"><svg viewBox="0 0 24 24" className="w-8 h-8" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12" /></svg></div>
-                      <h3 className="text-xl font-bold text-white mb-2">Transmission Sent</h3>
-                      <p className="text-sm text-white/50">Your message has been successfully routed to my inbox. I will reply shortly.</p>
-                    </motion.div>
-                  ) : (
-                    <form onSubmit={handleContactSubmit} className="space-y-4">
-                      <div><label htmlFor="name" className="block text-[10px] uppercase tracking-widest text-white/50 mb-1 pl-2">Designation (Name)</label><input id="name" type="text" required value={contactForm.name} onChange={(e) => setContactForm({ ...contactForm, name: e.target.value })} className="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder-white/20 focus:outline-none focus:border-teal-400/50 transition-colors" placeholder="John Doe" /></div>
-                      <div><label htmlFor="email" className="block text-[10px] uppercase tracking-widest text-white/50 mb-1 pl-2">Return Address (Email)</label><input id="email" type="email" required value={contactForm.email} onChange={(e) => setContactForm({ ...contactForm, email: e.target.value })} className="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder-white/20 focus:outline-none focus:border-teal-400/50 transition-colors" placeholder="john@example.com" /></div>
-                      <div><label htmlFor="message" className="block text-[10px] uppercase tracking-widest text-white/50 mb-1 pl-2">Message Payload</label><textarea id="message" required rows={4} value={contactForm.message} onChange={(e) => setContactForm({ ...contactForm, message: e.target.value })} className="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder-white/20 focus:outline-none focus:border-teal-400/50 transition-colors resize-none" placeholder="Hello, I'd like to talk about..." /></div>
-                      <button type="submit" disabled={isSubmitting} className="w-full mt-2 bg-white text-black font-semibold rounded-xl px-4 py-3 text-sm transition-all hover:bg-white/90 active:scale-[0.98] disabled:opacity-50 disabled:pointer-events-none flex justify-center items-center gap-2">
-                        {isSubmitting ? <><svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-black" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>Routing...</> : "Send Message"}
-                      </button>
-                    </form>
-                  )}
-                </div>
-              </div>
-              <div className="absolute top-4 right-4">
-                <button onClick={() => { playBack(); setIsContactOpen(false); }} className="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-white/50 hover:bg-white/10 hover:text-white transition-colors"><svg viewBox="0 0 24 24" className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2"><path d="M18 6L6 18M6 6l12 12" /></svg></button>
-              </div>
-            </motion.div>
-          </motion.div>
-        )}
+        <ContactModal
+          isOpen={isContactOpen}
+          onClose={() => { playBack(); setIsContactOpen(false); }}
+          onOpenProjects={() => { 
+            setIsContactOpen(false); 
+            setHubIndex(1); 
+            handleOpenCarousel(); 
+          }}
+          onOpenResume={() => { 
+            setIsContactOpen(false); 
+            setHubIndex(3); 
+            setIsResumeOpen(true); 
+          }}
+          onOpenAbout={() => { 
+            setIsContactOpen(false); 
+            setHubIndex(0); 
+            setIsAboutOpen(true); 
+          }}
+        />
       </AnimatePresence>
     </>
   );

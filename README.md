@@ -2,7 +2,7 @@
 
 A cinematic, highly interactive portfolio built to mimic a modern, tactile operating system. This project serves as both a showcase of my frontend engineering capabilities and a demonstration of deep UX philosophy, featuring custom physics, spatial audio feedback, and seamless state-driven navigation.
 
-![Portfolio Preview](./public/mainLogoAccent.svg) 
+**[Live Portfolio OS](./public/mainLogoAccent.svg)(https://portfolio-ux-beta.vercel.app/)** 
 
 ## 🚀 Key Features
 
@@ -36,8 +36,9 @@ src/
 ├── data/                # Hardcoded tech stack and project payloads
 ├── hooks/               # Extracted logic (useImagePreloader, useHubControls)
 └── utils/               # Global engines (soundEngine.ts)
+```
 
-💻 Local Development
+## 💻 Local Development
 
 To run this project locally:
 
@@ -52,9 +53,9 @@ npm install
 
 npm run dev
 
-📬 Contact & Links
-LinkedIn: Andrés Hernández
+## 📬 Contact & Links
+LinkedIn: [Andrés Hernández](https://www.linkedin.com/in/andres-hernandez-333b59282)
 
-GitHub: AndrewArocha
+GitHub: [AndrewArocha](https://github.com/AndrewArocha)
 
-Built with attention to detail.
+Built with attention to detail and visibility across all devices.

@@ -3,7 +3,6 @@ import { motion, AnimatePresence } from "framer-motion";
 import { techStack } from "../../data/techStack";
 import mainLogoAccent from "../../assets/logo/mainLogoAccent.svg";
 import { useInteraction } from "../../context/InteractionContext";
-// THE FIX: Imported missing audio files
 import { playGalleryClick, playModalOpen, playBack } from "../../utils/soundEngine";
 import ContactModal from "../Modals/ContactModal";
 import RedirectModal from "../Modals/RedirectModal";
@@ -24,26 +23,24 @@ type ProjectShowcaseProps = {
 };
 
 function ProjectShowcase({ project, onClose }: ProjectShowcaseProps) {
-  // THE FIX: Extracted tools to properly kill the showcase layer!
-  const { 
-    setInteractionMode, 
-    setOpenedProjectIndex, 
-    setSelectedIndex, 
-    setIsCarouselFocused 
+  const {
+    setInteractionMode,
+    setOpenedProjectIndex,
+    setSelectedIndex,
+    setIsCarouselFocused
   } = useInteraction();
-  
+
   const [rotationIndex, setRotationIndex] = useState(0);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [isContactOpen, setIsContactOpen] = useState(false);
   const [isRedirectOpen, setIsRedirectOpen] = useState(false);
 
-  // THE FIX: Master routing function to securely hand off to the Hub
   const handleRouteToHub = (modalName: string) => {
-    sessionStorage.setItem('hubAutoOpen', modalName); 
-    setOpenedProjectIndex(null); // Kills this ProjectShowcase layer!
-    setSelectedIndex(-1); // Clears the active carousel card
-    setIsCarouselFocused(false); 
-    setInteractionMode("hub"); // Routes immediately to Hub
+    sessionStorage.setItem('hubAutoOpen', modalName);
+    setOpenedProjectIndex(null);
+    setSelectedIndex(-1);
+    setIsCarouselFocused(false);
+    setInteractionMode("hub");
   };
 
   const description = project.description || "Project description placeholder text goes here...";
@@ -82,8 +79,9 @@ function ProjectShowcase({ project, onClose }: ProjectShowcaseProps) {
       dragConstraints={{ left: 0, right: 0 }}
       dragElastic={0.15}
       onDragEnd={(_, info) => {
-        if (Math.abs(info.offset.x) > 100 || Math.abs(info.velocity.x) > 400) {
-          playBack(); // THE FIX: Swiping closed triggers Back sound!
+        // THE FIX: Increased offset to 150 and velocity to 800 to prevent accidental closing
+        if (Math.abs(info.offset.x) > 150 || Math.abs(info.velocity.x) > 800) {
+          playBack();
           onClose();
         }
       }}
@@ -101,7 +99,7 @@ function ProjectShowcase({ project, onClose }: ProjectShowcaseProps) {
       <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(circle_at_center,transparent_50%,rgba(7,7,7,0.45)_100%)]" />
 
       <button
-        onClick={() => { playBack(); onClose(); }} // THE FIX: 'X' button triggers Back sound!
+        onClick={() => { playBack(); onClose(); }}
         onPointerDown={(e) => e.stopPropagation()}
         className="fixed top-6 right-6 z-[100] h-14 w-14 rounded-full border border-white/10 bg-black/35 backdrop-blur-xl text-white/70 transition-all hover:scale-105 hover:bg-white/10 hover:text-white active:scale-95 opacity-30"
         aria-label="Close Project"
@@ -139,7 +137,6 @@ function ProjectShowcase({ project, onClose }: ProjectShowcaseProps) {
           <p className="text-sm leading-relaxed text-white/70 mb-8 max-w-[400px]">{description}</p>
 
           <div className="flex gap-3">
-            {/* THE FIX: Mobile buttons trigger playModalOpen */}
             <button onClick={() => { playModalOpen(); setIsRedirectOpen(true); }} className="flex items-center justify-center h-12 w-12 rounded-full bg-orange-300 text-black transition-transform active:scale-95">
               <svg viewBox="0 0 24 24" className="h-6 w-6 fill-current"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z" /></svg>
             </button>
@@ -152,7 +149,7 @@ function ProjectShowcase({ project, onClose }: ProjectShowcaseProps) {
           dragConstraints={isDrawerOpen ? { top: 0, bottom: window.innerHeight * 0.85 - 90 } : { top: -(window.innerHeight * 0.85 - 90), bottom: 0 }}
           dragElastic={0.2} whileDrag={{ cursor: "grabbing" }}
           onDragEnd={(_, info) => {
-            if (!isDrawerOpen) { if (info.offset.y < -30 || info.velocity.y < -300) setIsDrawerOpen(true); } 
+            if (!isDrawerOpen) { if (info.offset.y < -30 || info.velocity.y < -300) setIsDrawerOpen(true); }
             else { if (info.offset.y > 30 || info.velocity.y > 300) setIsDrawerOpen(false); }
           }}
           variants={{ open: { y: 0 }, closed: { y: window.innerHeight * 0.85 - 90 } }}
@@ -174,6 +171,7 @@ function ProjectShowcase({ project, onClose }: ProjectShowcaseProps) {
 
             <motion.div
               className="h-[100px] relative w-full flex justify-center items-center shrink-0 touch-none"
+              onPointerDown={(e) => e.stopPropagation()} // THE FIX: Stops the mobile drag from bubbling to the background
               onPanEnd={(_, info) => {
                 if (Math.abs(info.offset.x) > Math.abs(info.offset.y)) {
                   if (info.offset.x < -30) { setRotationIndex((prev) => prev + 1); playGalleryClick(); }
@@ -209,59 +207,66 @@ function ProjectShowcase({ project, onClose }: ProjectShowcaseProps) {
         </motion.div>
       </div>
 
-      {/* DESKTOP VIEW */}
-      <div className="hidden xl:flex relative z-10 h-full w-full justify-between px-24 py-16">
-        <section className="w-[38%] 2xl:w-[45%] h-full flex flex-col">
-          <div className="h-[20%] flex flex-col justify-start pt-4">
+      {/* DESKTOP VIEW - RESTORED RESPONSIVE FIXES */}
+      <div className="hidden xl:flex relative z-10 h-full w-full justify-between px-10 2xl:px-24 py-8 2xl:py-16">
+        <section className="w-[42%] 2xl:w-[45%] h-full flex flex-col">
+          <div className="shrink-0 flex flex-col justify-start mb-4 2xl:mb-0 2xl:h-[20%] pt-2 2xl:pt-4">
             <div className="mb-4 flex items-center gap-4">
               <span className="text-xs uppercase tracking-[0.3em] text-[#efc07b]">Featured Project</span>
-              <div className="h-px w-32 bg-[#efc07b]/30" />
+              <div className="h-px w-24 2xl:w-32 bg-[#efc07b]/30" />
             </div>
-            <div className="h-14 w-14 rounded-full border border-white/10 bg-white/5 flex items-center justify-center">
-              <img src={mainLogoAccent} alt="{A}" className="h-8 w-8 object-contain" />
+            <div className="h-12 w-12 2xl:h-14 2xl:w-14 rounded-full border border-white/10 bg-white/5 flex items-center justify-center shrink-0">
+              <img src={mainLogoAccent} alt="{A}" className="h-6 w-6 2xl:h-8 2xl:w-8 object-contain" />
             </div>
           </div>
 
-          <div className="flex-1 flex flex-col justify-start pt-[6vh]">
-            <h1 className="mb-6 text-6xl font-bold tracking-tight leading-none text-white">{project.title}</h1>
-            <p className="mb-6 text-2xl font-medium text-orange-300/90">Adventure far. Discover more.</p>
+          <div className="flex-1 flex flex-col justify-start min-h-0 pt-2 2xl:pt-[4vh]">
+            <h1 className="mb-4 2xl:mb-6 text-5xl 2xl:text-6xl font-bold tracking-tight leading-none text-white shrink-0">{project.title}</h1>
+            <p className="mb-4 2xl:mb-6 text-xl 2xl:text-2xl font-medium text-orange-300/90 shrink-0">Adventure far. Discover more.</p>
 
-            <div className="mb-8 flex flex-wrap gap-3">
+            <div className="mb-6 2xl:mb-8 flex flex-wrap gap-2 2xl:gap-3 shrink-0">
               {project.stack?.map((techKey: keyof typeof techStack) => {
                 const tech = techStack[techKey];
                 return (
-                  <div key={techKey} title={tech?.name || techKey} className="flex h-12 w-12 items-center justify-center rounded-full border border-white/10 bg-white/4 backdrop-blur-xl transition-all duration-300 hover:scale-105 hover:bg-white/[0.07]">
-                    {tech?.icon ? <img src={tech.icon} alt={tech.name} className="h-6 w-6 object-contain opacity-90" /> : <span className="text-[10px] font-medium text-white/70">{techKey}</span>}
+                  <div key={techKey} title={tech?.name || techKey} className="flex h-10 w-10 2xl:h-12 2xl:w-12 items-center justify-center rounded-full border border-white/10 bg-white/4 backdrop-blur-xl transition-all duration-300 hover:scale-105 hover:bg-white/[0.07]">
+                    {tech?.icon ? <img src={tech.icon} alt={tech.name} className="h-5 w-5 2xl:h-6 2xl:w-6 object-contain opacity-90" /> : <span className="text-[9px] font-medium text-white/70">{techKey}</span>}
                   </div>
                 );
               })}
             </div>
 
-            <p className="max-w-[520px] text-base leading-relaxed text-white/70">{description}</p>
+            <div className="overflow-y-auto custom-scrollbar pr-4 mb-4 min-h-[60px]">
+              <p className="max-w-[520px] text-sm 2xl:text-base leading-relaxed text-white/70">{description}</p>
+            </div>
 
-            <div className="mt-20 flex gap-4" onPointerDown={(e) => e.stopPropagation()}>
-              {/* THE FIX: Desktop buttons trigger playModalOpen */}
-              <button onClick={() => { playModalOpen(); setIsRedirectOpen(true); }} className="rounded-full bg-orange-300 px-7 py-4 text-sm font-semibold text-black transition-transform hover:scale-[1.02] active:scale-[0.98]">
+            <div className="mt-auto pt-2 2xl:pt-6 flex gap-3 2xl:gap-4 shrink-0 pb-2" onPointerDown={(e) => e.stopPropagation()}>
+              <button
+                onClick={() => { playModalOpen(); setIsRedirectOpen(true); }}
+                className="flex items-center gap-2 rounded-full bg-orange-300 px-6 py-3 2xl:px-7 2xl:py-4 text-xs 2xl:text-sm font-semibold text-black transition-transform hover:scale-[1.02] active:scale-[0.98]"
+              >
+                <svg viewBox="0 0 24 24" className="h-4 w-4 2xl:h-5 2xl:w-5 fill-current">
+                  <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z" />
+                </svg>
                 View GitHub
               </button>
-              <button onClick={() => { playModalOpen(); setIsContactOpen(true); }} className="rounded-full border border-white/10 bg-white/5 px-7 py-4 text-sm font-semibold text-white transition-all hover:bg-white/10">
+              <button onClick={() => { playModalOpen(); setIsContactOpen(true); }} className="rounded-full border border-white/10 bg-white/5 px-6 py-3 2xl:px-7 2xl:py-4 text-xs 2xl:text-sm font-semibold text-white transition-all hover:bg-white/10">
                 Contact Me
               </button>
             </div>
           </div>
         </section>
 
-        <section className="flex flex-1 items-center justify-start pl-15 pt-[6vh]">
-          <div className="relative h-[65vh] max-h-[580px] w-[48vw] 2xl:w-[55vw] overflow-hidden rounded-[34px] border border-white/10 bg-black/20 backdrop-blur-xl pointer-events-none">
+        <section className="flex flex-1 items-center justify-start pl-8 2xl:pl-15">
+          <div className="relative h-[55vh] 2xl:h-[65vh] max-h-[580px] w-[95%] 2xl:w-[55vw] overflow-hidden rounded-[28px] 2xl:rounded-[34px] border border-white/10 bg-black/20 backdrop-blur-xl pointer-events-none">
             <img src={activeImage} alt={project.title} className="h-full w-full object-cover" />
             <div className="absolute inset-0 bg-linear-to-t from-black/30 via-transparent to-transparent" />
           </div>
         </section>
 
-        <section className="relative flex h-full w-[400px] items-center justify-end">
+        <section className="relative flex h-full w-[250px] 2xl:w-[400px] items-center justify-end">
           <motion.div
             className="relative h-full w-full flex justify-end items-center touch-none"
-            onPointerDown={(e) => e.stopPropagation()} 
+            onPointerDown={(e) => e.stopPropagation()}
             onPanEnd={(_, info) => {
               if (info.offset.y < -30 || info.velocity.y < -200) { setRotationIndex((prev) => prev + 1); playGalleryClick(); }
               else if (info.offset.y > 30 || info.velocity.y > 200) { setRotationIndex((prev) => prev - 1); playGalleryClick(); }
@@ -282,7 +287,7 @@ function ProjectShowcase({ project, onClose }: ProjectShowcaseProps) {
                     animate={{ y: offset * 136, x: Math.abs(offset) * 28, scale: isCenter ? 1 : 0.75 - Math.abs(offset) * 0.1, opacity: isCenter ? 1 : 0.5 - Math.abs(offset) * 0.2 }}
                     exit={{ y: (offset + Math.sign(offset) * 0.5) * 136, x: Math.abs(offset) * 28 + 20, opacity: 0, scale: 0.6 }}
                     transition={{ type: "spring", stiffness: 260, damping: 25 }}
-                    className={`absolute right-8 top-1/2 -mt-16 h-32 w-32 cursor-pointer rounded-full overflow-hidden border-2 ${isCenter ? "border-[#efc07b] shadow-[0_0_30px_rgba(239,192,123,0.25)] z-20" : "border-white/15 z-10"}`}
+                    className={`absolute right-4 2xl:right-8 top-1/2 -mt-16 h-24 w-24 2xl:h-32 2xl:w-32 cursor-pointer rounded-full overflow-hidden border-2 ${isCenter ? "border-[#efc07b] shadow-[0_0_30px_rgba(239,192,123,0.25)] z-20" : "border-white/15 z-10"}`}
                   >
                     <img src={img} alt="Gallery thumbnail" className="h-full w-full object-cover pointer-events-none" />
                     {!isCenter && <div className="absolute inset-0 bg-black/40 pointer-events-none" />}
@@ -301,7 +306,7 @@ function ProjectShowcase({ project, onClose }: ProjectShowcaseProps) {
         onOpenResume={() => { setIsContactOpen(false); handleRouteToHub('resume'); }}
         onOpenAbout={() => { setIsContactOpen(false); handleRouteToHub('about'); }}
       />
-      
+
       <RedirectModal
         isOpen={isRedirectOpen}
         onClose={() => { playBack(); setIsRedirectOpen(false); }}

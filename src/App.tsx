@@ -17,22 +17,16 @@ function App() {
   const {
     showControlsHint,
     setShowControlsHint,
-
     isCarouselFocused,
     setIsCarouselFocused,
-
     didDrag,
     setDidDrag,
-
     selectedIndex,
     setSelectedIndex,
-
     openedProjectIndex,
     setOpenedProjectIndex,
-
     interactionMode,
     setInteractionMode,
-
     lastSelectedIndex,
     setLastSelectedIndex,
   } = useInteraction();
@@ -42,7 +36,6 @@ function App() {
 
   const dragThreshold = useRef(false);
   const pointerDownTime = useRef(0);
-
   const initialCarouselMount = useRef(true);
   
   useEffect(() => {
@@ -50,7 +43,6 @@ function App() {
       initialCarouselMount.current = false; 
       return; 
     }
-    // Anytime the selected project changes, play the dial tick!
     if (selectedIndex >= 0) {
       playCardScroll();
     }
@@ -59,10 +51,7 @@ function App() {
   const idleBackground =
     "https://static.vecteezy.com/system/resources/thumbnails/072/203/042/small/scenic-mountain-view-at-sunset-with-vibrant-sky-and-green-hills-free-photo.jpg";
 
-  // 1. DERIVED STATE (ESLint)
-  const [hoveredBackground, setHoveredBackground] = useState<string | null>(
-    null,
-  );
+  const [hoveredBackground, setHoveredBackground] = useState<string | null>(null);
 
   const activeBackground =
     hoveredBackground ??
@@ -72,19 +61,27 @@ function App() {
     setHoveredBackground(null);
   };
 
-  useEffect(() => {
-    if (interactionMode !== "carousel") return;
-
-    setShowControlsHint(true);
-
-    const timer = setTimeout(() => {
+  // THE FIX: Properly hiding the hint when exiting the carousel!
+useEffect(() => {
+    // 1. Instantly hide if we enter the Project Showcase
+    if (interactionMode === "showcase") {
       setShowControlsHint(false);
-    }, 6000);
+      return;
+    }
 
-    return () => clearTimeout(timer);
+    // 2. Show the hint if we are in the Hub OR the Carousel
+    if (interactionMode === "hub" || interactionMode === "carousel") {
+      setShowControlsHint(true);
+      
+      // 3. Clear it after 4.5 seconds so it doesn't linger forever
+      const timer = setTimeout(() => {
+        setShowControlsHint(false);
+      }, 4500);
+
+      return () => clearTimeout(timer);
+    }
   }, [interactionMode, setShowControlsHint]);
 
-  // 2. POLISHED DRAG LOGIC (Fixes accidental click triggering)
   const handleDragEnd = (
     _: MouseEvent | TouchEvent | PointerEvent,
     info: PanInfo,
@@ -95,24 +92,19 @@ function App() {
     dragThreshold.current = false;
 
     if (!wasDragging && dragDuration < 200) {
-      // It was a quick, stationary tap; treat it strictly as a click, not a drag
       setDidDrag(false);
       return;
     }
 
     if (!isCarouselFocused) return;
 
-    // Set dragging state flag to true instantly to block children click handlers
     setDidDrag(true);
-
-    // Briefly push the reset to the next micro-queue loop
     setTimeout(() => {
       setDidDrag(false);
     }, 50);
 
     const offsetX = info.offset.x;
     const velocityX = info.velocity.x;
-
     const swipePower = Math.abs(offsetX) + Math.abs(velocityX) * 0.18;
 
     if (
@@ -128,21 +120,11 @@ function App() {
     }
 
     let jump = 0;
-
-    if (offsetX < -35 || velocityX < -220) {
-      jump = swipePower > 900 ? 2 : 1;
-    }
-
-    if (offsetX > 35 || velocityX > 220) {
-      jump = swipePower > 900 ? -2 : -1;
-    }
+    if (offsetX < -35 || velocityX < -220) jump = swipePower > 900 ? 2 : 1;
+    if (offsetX > 35 || velocityX > 220) jump = swipePower > 900 ? -2 : -1;
 
     if (jump !== 0) {
-      const nextIndex = Math.max(
-        0,
-        Math.min(projects.length - 1, selectedIndex + jump),
-      );
-
+      const nextIndex = Math.max(0, Math.min(projects.length - 1, selectedIndex + jump));
       setSelectedIndex(nextIndex);
       setLastSelectedIndex(nextIndex);
       playCardScroll();
@@ -171,7 +153,6 @@ function App() {
         setSelectedIndex(-1);
       }}
     >
-      {/* HUB LAYER */}
       <AnimatePresence mode="wait">
         {interactionMode === "hub" && <HomeHub key="hub" />}
 
@@ -187,48 +168,20 @@ function App() {
         >
           {interactionMode === "hub" ? (
             <div className="flex flex-col items-center gap-2">
-              {/* Arrow Keys Layout */}
               <div className="flex gap-2 text-white/70">
-                <div className="h-8 w-8 flex items-center justify-center rounded bg-white/10 border border-white/20">
-                  ↑
-                </div>
+                <div className="h-8 w-8 flex items-center justify-center rounded bg-white/10 border border-white/20">←</div>
+                <div className="h-8 w-8 flex items-center justify-center rounded bg-white/10 border border-white/20">→</div>
               </div>
-              <div className="flex gap-2 text-white/70">
-                <div className="h-8 w-8 flex items-center justify-center rounded bg-white/10 border border-white/20">
-                  ←
-                </div>
-                <div className="h-8 w-8 flex items-center justify-center rounded bg-white/10 border border-white/20">
-                  ↓
-                </div>
-                <div className="h-8 w-8 flex items-center justify-center rounded bg-white/10 border border-white/20">
-                  →
-                </div>
-              </div>
-
-              {/* Enter Key Action */}
               <div className="mt-2 flex w-full items-center justify-center gap-3 border-t border-white/10 pt-3 text-white/70">
-                <div className="flex h-6 px-2 items-center justify-center rounded bg-white/10 border border-white/20 text-[10px] font-bold">
-                  ↵ Enter
-                </div>
-                <span className="text-[10px] uppercase tracking-wider text-white/50">
-                  Open Card
-                </span>
+                <div className="flex h-6 px-2 items-center justify-center rounded bg-white/10 border border-white/20 text-[10px] font-bold">↵ Enter</div>
+                <span className="text-[10px] uppercase tracking-wider text-white/50">Open Card</span>
               </div>
             </div>
           ) : (
             <div className="space-y-2 text-sm text-white/75">
-              <p>
-                <span className="text-white font-bold">← →</span>
-                <span className="ml-3">Navigate</span>
-              </p>
-              <p>
-                <span className="text-white font-bold">↵</span>
-                <span className="ml-3">Open Project</span>
-              </p>
-              <p>
-                <span className="text-white font-bold">Esc</span>
-                <span className="ml-3">Back / Close</span>
-              </p>
+              <p><span className="text-white font-bold">← →</span><span className="ml-3">Navigate</span></p>
+              <p><span className="text-white font-bold">↵</span><span className="ml-3">Open Project</span></p>
+              <p><span className="text-white font-bold">Esc</span><span className="ml-3">Back / Close</span></p>
             </div>
           )}
         </motion.div>
@@ -239,33 +192,15 @@ function App() {
             key={activeBackground}
             src={activeBackground || idleBackground}
             alt=""
-            initial={{
-              opacity: 0,
-              scale: 1.08,
-              x: -35,
-            }}
-            animate={{
-              opacity: 0.28,
-              scale: 1.12,
-              x: 35,
-            }}
+            initial={{ opacity: 0, scale: 1.08, x: -35 }}
+            animate={{ opacity: 0.28, scale: 1.12, x: 35 }}
             transition={{
               opacity: { duration: 0.8 },
-              scale: {
-                duration: 12,
-                repeat: Infinity,
-                repeatType: "reverse",
-              },
-              x: {
-                duration: 12,
-                repeat: Infinity,
-                repeatType: "reverse",
-                ease: "easeInOut",
-              },
+              scale: { duration: 12, repeat: Infinity, repeatType: "reverse" },
+              x: { duration: 12, repeat: Infinity, repeatType: "reverse", ease: "easeInOut" },
             }}
             className="absolute inset-0 h-full w-full object-cover blur-md"
           />
-
           <div className="absolute inset-0 bg-linear-to-b from-black/60 via-black/45 to-black/90" />
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_20%,rgba(0,0,0,0.8)_100%)]" />
         </div>
@@ -285,12 +220,8 @@ function App() {
               }}
               className="absolute top-8 left-8 z-50 flex items-center gap-4 group"
             >
-              <div className="h-12 w-12 rounded-full border border-white/10 bg-white/5 backdrop-blur-md flex items-center justify-center">
-                ←
-              </div>
-              <span className="text-xs uppercase tracking-[0.3em] font-semibold text-white/50">
-                Go Back
-              </span>
+              <div className="h-12 w-12 rounded-full border border-white/10 bg-white/5 backdrop-blur-md flex items-center justify-center">←</div>
+              <span className="text-xs uppercase tracking-[0.3em] font-semibold text-white/50">Go Back</span>
             </motion.button>
 
             <motion.section
@@ -304,7 +235,6 @@ function App() {
                 setDidDrag(false);
               }}
               onDrag={(_, info) => {
-                // Only classify as a real drag if moving beyond a micro-shaking threshold
                 if (Math.abs(info.offset.x) > 8) {
                   dragThreshold.current = true;
                   setDidDrag(true);
@@ -314,10 +244,7 @@ function App() {
             >
               {projects.map((project, index) => {
                 const isSelected = selectedIndex === index;
-                const offset =
-                  selectedIndex === -1
-                    ? (index - 1) * 680
-                    : (index - selectedIndex) * 760;
+                const offset = selectedIndex === -1 ? (index - 1) * 680 : (index - selectedIndex) * 760;
 
                 return (
                   <motion.div
@@ -327,17 +254,11 @@ function App() {
                     initial={false}
                     animate={{
                       x: offset,
-                      scale:
-                        selectedIndex === -1 ? 0.88 : isSelected ? 1 : 0.72,
+                      scale: selectedIndex === -1 ? 0.88 : isSelected ? 1 : 0.72,
                       opacity: selectedIndex === -1 ? 1 : isSelected ? 1 : 0.34,
                       zIndex: isSelected ? 10 : 1,
                     }}
-                    transition={{
-                      type: "spring",
-                      stiffness: 150,
-                      damping: 24,
-                      mass: 0.6,
-                    }}
+                    transition={{ type: "spring", stiffness: 150, damping: 24, mass: 0.6 }}
                   >
                     <ProjectCarouselCard
                       title={project.title}
