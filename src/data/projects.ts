@@ -3,6 +3,7 @@ import { techStack } from './techStack';
 type Project = {
     id: number;
     title: string;
+    tagline?: string;
     image: string;
     description?: string;
     stack?: Array<keyof typeof techStack>;
@@ -14,26 +15,29 @@ type Project = {
 const projects: Project[] = [
     {
         id: 1,
-        title: 'Around The U.S.',
+        title: 'Around The World',
+        tagline: 'Adventure far. Discover more.',
         image:
-            'https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=1200',
+            '/AroundTheWorld5.png',
 
         description:
-            'Modern travel platform for discovering destinations and planning memorable experiences.',
+            'World Gallery is a web application that allows users to edit their profile information and manage a gallery of image cards. Users can add new cards, remove cards, like cards, and preview images in modal windows. The project uses object-oriented programming principles with reusable classes for cards, popups, validation, and user information management.',
 
         stack: [
-            'react',
+            'javascript',
             'typescript',
-            'tailwind',
+            'node',
+            'html',
+            'css'
         ],
 
         gallery: [
-        'https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=1200', // Hero image
-        'https://images.unsplash.com/photo-1499856871958-5b9627545d1a?w=1200', // Paris
-        'https://images.unsplash.com/photo-1512453979798-5ea266f8880c?w=1200', // Dubai
-        'https://images.unsplash.com/photo-1496442226666-8d4d0e62e6e9?w=1200', // NYC
-        'https://plus.unsplash.com/premium_photo-1733306480053-867019b115d0?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D' // Vermont
-    ],
+            '/AroundTheWorld1.png', // Hero image
+            '/AroundTheWorld2.png', // Update Profile Pic Modal
+            '/AroundTheWorld3.png', // Update Profile Info Modal
+            '/AroundTheWorld4.png', // New Card Modal
+            '/AroundTheWorld5.png' // Card Full View Modal
+        ],
 
         githubUrl: 'https://github.com/AndrewArocha/web_project_around_es',
         liveDemoUrl: '',
@@ -41,39 +45,57 @@ const projects: Project[] = [
 
     {
         id: 2,
-        title: 'Coffee Shop',
+        title: 'EVEO INC Report Hub',
+        tagline: 'Data-driven insights for BDC.',
         image:
-            'https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=1200',
+            '/BDCReportMaker1.png',
 
         description:
-            'Premium coffee storefront with smooth ordering experience and immersive branding.',
-
-        stack: [
-            'react',
-            'javascript',
-            'tailwind',
-        ],
-
-        githubUrl: 'https://github.com/AndrewArocha/web_project_coffeeshop_es',
-        liveDemoUrl: '',
-    },
-
-    {
-        id: 3,
-        title: 'Movie Explorer',
-        image:
-            'https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=1200',
-
-        description:
-            'Interactive movie discovery interface with dynamic filtering and cinematic browsing.',
+            'Eveo Hub is a premium, multi-tenant Business Development Center (BDC) reporting workspace designed specifically for automotive dealerships. Built to replace cluttered spreadsheets and uninspired SaaS dashboards. It allows BDC managers and store owners to securely compile, analyze, and share critical workflow metrics across multiple dealership locations.',
 
         stack: [
             'react',
             'vite',
             'tailwind',
+            'typescript',
         ],
-        githubUrl:'https://github.com/AndrewArocha/BDC-Report-maker/tree/vite-tailwind-refactor',
-        liveDemoUrl:'',
+
+        gallery: [
+            '/BDCReportMaker1.png', // Hero IMG
+            '/BDCReportMaker2.png', // Report Type Selector
+            '/BDCReportMaker3.png', // Report View
+            '/BDCReportMaker4.png', // Report Loading State
+            '/BDCReportMaker5.png', // Compiled State
+            '/BDCReportMaker6.png', // Compiled Preview
+            '/BDCReportMaker7.png', // Compiled Extended Preview
+            '/BDCReportMaker8.png',
+        ],
+
+        githubUrl: 'https://github.com/AndrewArocha/BDC-Report-maker/tree/vite-tailwind-refactor',
+        liveDemoUrl: '',
+    },
+
+    {
+        id: 3,
+        title: 'Triple Espresso',
+        image:
+            '/CoffeeShop1.png',
+
+        description:
+            'A responsive, semantic HTML5 and CSS3 landing page designed for a specialty coffee shop. Focuses on accessibility, form validation, and core web design fundamentals without relying on heavy JavaScript frameworks.',
+
+        stack: [
+            'html',
+            'css',
+        ],
+
+        gallery: [
+            '/CoffeeShop1.png', // Hero image
+            '/CoffeeShop2.png' // Forms 
+        ],
+
+        githubUrl: 'https://github.com/AndrewArocha/web_project_coffeeshop_es',
+        liveDemoUrl: '',
     },
 ];
 

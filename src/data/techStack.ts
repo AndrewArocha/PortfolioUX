@@ -9,6 +9,7 @@ import NextLogo from '../assets/logo/NextJS.svg';
 import MotionLogo from '../assets/logo/Motion-Framer.svg';
 import ViteLogo from '../assets/logo/Vite.svg';
 import HTMLLogo from '../assets/logo/HTML5.svg';
+import CSSLogo from "../assets/logo/CSS.svg"
 
 export const techStack = {
     react: {
@@ -64,5 +65,9 @@ export const techStack = {
     html: {
         name: 'HTML5',
         icon: HTMLLogo,
+    },
+    css: {
+        name: 'CSS3',
+        icon: CSSLogo
     },
 } as const;

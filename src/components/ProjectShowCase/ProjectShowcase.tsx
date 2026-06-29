@@ -11,6 +11,7 @@ type ProjectShowcaseProps = {
   project: {
     id: number;
     title: string;
+    tagline?: string;
     image: string;
     description?: string;
     stack?: Array<keyof typeof techStack>;
@@ -44,6 +45,7 @@ function ProjectShowcase({ project, onClose }: ProjectShowcaseProps) {
   };
 
   const description = project.description || "Project description placeholder text goes here...";
+  const tagline = project.tagline || "Innovating at the intersection of design and logic.";
   const gallery = project.gallery && project.gallery.length > 0 ? project.gallery : [project.image];
   const activeGalleryIndex = ((rotationIndex % gallery.length) + gallery.length) % gallery.length;
   const activeImage = gallery[activeGalleryIndex];
@@ -121,7 +123,7 @@ function ProjectShowcase({ project, onClose }: ProjectShowcaseProps) {
           </div>
 
           <h1 className="text-4xl font-bold tracking-tight leading-none text-white mb-2">{project.title}</h1>
-          <p className="text-lg font-medium text-orange-300/90 mb-6">Adventure far. Discover more.</p>
+          <p className="text-lg font-medium text-orange-300/90 mb-6">{tagline}</p>
 
           <div className="flex flex-wrap gap-2 mb-6">
             {project.stack?.map((techKey: keyof typeof techStack) => {
@@ -222,7 +224,7 @@ function ProjectShowcase({ project, onClose }: ProjectShowcaseProps) {
 
           <div className="flex-1 flex flex-col justify-start min-h-0 pt-2 2xl:pt-[4vh]">
             <h1 className="mb-4 2xl:mb-6 text-5xl 2xl:text-6xl font-bold tracking-tight leading-none text-white shrink-0">{project.title}</h1>
-            <p className="mb-4 2xl:mb-6 text-xl 2xl:text-2xl font-medium text-orange-300/90 shrink-0">Adventure far. Discover more.</p>
+            <p className="mb-4 2xl:mb-6 text-xl 2xl:text-2xl font-medium text-orange-300/90 shrink-0">{tagline}</p>
 
             <div className="mb-6 2xl:mb-8 flex flex-wrap gap-2 2xl:gap-3 shrink-0">
               {project.stack?.map((techKey: keyof typeof techStack) => {

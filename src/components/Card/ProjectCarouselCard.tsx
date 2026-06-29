@@ -125,7 +125,7 @@ function Card({
                 <p className="mb-2 text-[10px] sm:text-xs uppercase tracking-[0.35em] text-white/45">
                   Featured Project
                 </p>
-                <h2 className="text-2xl sm:text-3xl lg:text-5xl font-semibold tracking-tight text-white leading-none">
+                <h2 className="text-2xl sm:text-2xl lg:text-3xl font-semibold tracking-tight text-white leading-none">
                   {title}
                 </h2>
               </div>
