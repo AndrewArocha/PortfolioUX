@@ -37,11 +37,18 @@ function App() {
   const dragThreshold = useRef(false);
   const pointerDownTime = useRef(0);
   const initialCarouselMount = useRef(true);
-  
+
+useEffect(() => {
+  if (interactionMode === "hub") {
+    setSelectedIndex(-1);
+    setHoveredBackground(null);
+  }
+}, [interactionMode]);
+
   useEffect(() => {
-    if (initialCarouselMount.current) { 
-      initialCarouselMount.current = false; 
-      return; 
+    if (initialCarouselMount.current) {
+      initialCarouselMount.current = false;
+      return;
     }
     if (selectedIndex >= 0) {
       playCardScroll();
@@ -61,8 +68,7 @@ function App() {
     setHoveredBackground(null);
   };
 
-  // THE FIX: Properly hiding the hint when exiting the carousel!
-useEffect(() => {
+  useEffect(() => {
     // 1. Instantly hide if we enter the Project Showcase
     if (interactionMode === "showcase") {
       setShowControlsHint(false);
@@ -72,7 +78,7 @@ useEffect(() => {
     // 2. Show the hint if we are in the Hub OR the Carousel
     if (interactionMode === "hub" || interactionMode === "carousel") {
       setShowControlsHint(true);
-      
+
       // 3. Clear it after 4.5 seconds so it doesn't linger forever
       const timer = setTimeout(() => {
         setShowControlsHint(false);
@@ -153,38 +159,37 @@ useEffect(() => {
         setSelectedIndex(-1);
       }}
     >
+      {/* DYNAMIC CONTROLS HINT */}
+      <motion.div
+        initial={{ opacity: 0, y: 12 }}
+        animate={{
+          /* THE FIX: Show if we are in carousel OR hub, and controls are enabled */
+          opacity: showControlsHint && (interactionMode === "carousel" || interactionMode === "hub") ? 1 : 0,
+          y: showControlsHint && (interactionMode === "carousel" || interactionMode === "hub") ? 0 : 10,
+        }}
+        transition={{ duration: 0.5, ease: "easeOut" }}
+        className="hidden md:block absolute left-8 bottom-8 z-30 rounded-3xl border border-white/10 bg-black/40 px-6 py-5 backdrop-blur-xl pointer-events-none"
+      >
+        <div className="space-y-3 text-[11px] uppercase tracking-widest text-white/50 font-medium">
+          <p className="flex items-center">
+            <span className="text-white/90 w-10">← →</span>
+            Navigate
+          </p>
+          <p className="flex items-center">
+            <span className="text-white/90 w-10">↵</span>
+            {interactionMode === "hub" ? "Open Card" : "Open Project"}
+          </p>
+          {interactionMode === "carousel" && (
+            <p className="flex items-center">
+              <span className="text-white/90 w-10">Esc</span>
+              Back / Close
+            </p>
+          )}
+        </div>
+      </motion.div>
+
       <AnimatePresence mode="wait">
         {interactionMode === "hub" && <HomeHub key="hub" />}
-
-        {/* DYNAMIC CONTROLS HINT */}
-        <motion.div
-          initial={{ opacity: 0, y: 12 }}
-          animate={{
-            opacity: showControlsHint ? 1 : 0,
-            y: showControlsHint ? 0 : 10,
-          }}
-          transition={{ duration: 0.5, ease: "easeOut" }}
-          className="hidden md:block absolute left-8 bottom-8 z-30 rounded-3xl border border-white/10 bg-black/40 px-6 py-5 backdrop-blur-xl pointer-events-none"
-        >
-          {interactionMode === "hub" ? (
-            <div className="flex flex-col items-center gap-2">
-              <div className="flex gap-2 text-white/70">
-                <div className="h-8 w-8 flex items-center justify-center rounded bg-white/10 border border-white/20">←</div>
-                <div className="h-8 w-8 flex items-center justify-center rounded bg-white/10 border border-white/20">→</div>
-              </div>
-              <div className="mt-2 flex w-full items-center justify-center gap-3 border-t border-white/10 pt-3 text-white/70">
-                <div className="flex h-6 px-2 items-center justify-center rounded bg-white/10 border border-white/20 text-[10px] font-bold">↵ Enter</div>
-                <span className="text-[10px] uppercase tracking-wider text-white/50">Open Card</span>
-              </div>
-            </div>
-          ) : (
-            <div className="space-y-2 text-sm text-white/75">
-              <p><span className="text-white font-bold">← →</span><span className="ml-3">Navigate</span></p>
-              <p><span className="text-white font-bold">↵</span><span className="ml-3">Open Project</span></p>
-              <p><span className="text-white font-bold">Esc</span><span className="ml-3">Back / Close</span></p>
-            </div>
-          )}
-        </motion.div>
 
         {/*BACKGROUND LOGIC*/}
         <div className="absolute inset-0">
@@ -220,7 +225,11 @@ useEffect(() => {
               }}
               className="absolute top-8 left-8 z-50 flex items-center gap-4 group"
             >
-              <div className="h-12 w-12 rounded-full border border-white/10 bg-white/5 backdrop-blur-md flex items-center justify-center">←</div>
+              <div className="h-12 w-12 rounded-full border border-white/10 bg-white/5 backdrop-blur-md flex items-center justify-center text-white/60 transition-colors group-hover:text-white">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-5 w-5">
+                  <path d="M19 12H5M12 19l-7-7 7-7" />
+                </svg>
+              </div>
               <span className="text-xs uppercase tracking-[0.3em] font-semibold text-white/50">Go Back</span>
             </motion.button>
 

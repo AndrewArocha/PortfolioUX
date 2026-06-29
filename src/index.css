@@ -2,6 +2,7 @@
 
 @theme {
 --animate-border-spin: border-spin 14s cubic-bezier(0.1, 0.3, 0.2, 0.5) infinite;
+--font-sans: 'Outfit', ui-sans-serif, system-ui, sans-serif;
 }
 
 @keyframes border-spin {
@@ -12,4 +13,58 @@
   to {
     transform: rotate(360deg);
   }
+}
+
+/* THE FIX: Local Font Architecture */
+@font-face {
+  font-family: 'Outfit';
+  font-style: normal;
+  font-weight: 300;
+  font-display: swap; /* Tells the browser to show fallback text instantly while loading */
+  src: url('/fonts/outfit-v15-latin-300.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Outfit';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/fonts/outfit-v15-latin-regular.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Outfit';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url('/fonts/outfit-v15-latin-600.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Outfit';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('/fonts/outfit-v15-latin-700.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Outfit';
+  font-style: normal;
+  font-weight: 800;
+  font-display: swap;
+  src: url('/fonts/outfit-v15-latin-800.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Outfit';
+  font-style: normal;
+  font-weight: 900;
+  font-display: swap;
+  src: url('/fonts/outfit-v15-latin-900.woff2') format('woff2');
+}
+
+body {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }

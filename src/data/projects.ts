@@ -32,11 +32,11 @@ const projects: Project[] = [
         ],
 
         gallery: [
-            '/AroundTheWorld1.png', // Hero image
+            '/AroundTheWorld5.png', // Card Full View Modal
             '/AroundTheWorld2.png', // Update Profile Pic Modal
             '/AroundTheWorld3.png', // Update Profile Info Modal
             '/AroundTheWorld4.png', // New Card Modal
-            '/AroundTheWorld5.png' // Card Full View Modal
+            '/AroundTheWorld1.png' // Gallery View
         ],
 
         githubUrl: 'https://github.com/AndrewArocha/web_project_around_es',
@@ -95,7 +95,7 @@ const projects: Project[] = [
         ],
 
         githubUrl: 'https://github.com/AndrewArocha/web_project_coffeeshop_es',
-        liveDemoUrl: '',
+        liveDemoUrl: 'https://andrewarocha.github.io/web_project_coffeeshop_es/',
     },
 ];
 

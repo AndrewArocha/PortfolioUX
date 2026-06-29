@@ -264,25 +264,33 @@ export default function HomeHub() {
                 </div>
               </div>
               {/* Resume button and Close button */}
-              <div className="mt-8 flex justify-between items-center">
-                <button
-                  onClick={() => {
-                    playModalOpen();
-                    setIsAboutOpen(false);
-                    setHubIndex(3);
-                    setIsResumeOpen(true);
-                  }}
-                  className="rounded-full border border-teal-500/50 bg-teal-500/10 px-6 py-2 text-sm font-medium text-teal-400 transition-colors hover:bg-teal-500/20 cursor-pointer"
-                >
-                  View Resume
-                </button>
-                <button
-                  onClick={() => { playBack(); setIsAboutOpen(false); }}
-                  className="rounded-full border border-white/20 bg-white/5 px-6 py-2 text-sm font-medium text-white transition-colors hover:bg-white/10 cursor-pointer"
-                >
-                  Close Profile
-                </button>
+              <div className="mt-8 pt-6 border-t border-white/10 grid grid-cols-2 gap-4">
+                {/* Left Column: View Resume */}
+                <div className="flex justify-center">
+                  <button
+                    onClick={() => {
+                      playModalOpen();
+                      setIsAboutOpen(false);
+                      setHubIndex(3);
+                      setIsResumeOpen(true);
+                    }}
+                    className="rounded-full border border-teal-500/50 bg-teal-500/10 px-6 py-2 text-sm font-medium text-teal-400 transition-colors hover:bg-teal-500/20 cursor-pointer"
+                  >
+                    View Resume
+                  </button>
+                </div>
+
+                {/* Right Column: Close Profile */}
+                <div className="flex justify-center">
+                  <button
+                    onClick={() => { playBack(); setIsAboutOpen(false); }}
+                    className="rounded-full border border-white/20 bg-white/5 px-6 py-2 text-sm font-medium text-white transition-colors hover:bg-white/10 cursor-pointer"
+                  >
+                    Close Profile
+                  </button>
+                </div>
               </div>
+
             </motion.div>
           </motion.div>
         )}
@@ -327,7 +335,7 @@ export default function HomeHub() {
                   <p className="text-white/50 tracking-widest uppercase text-sm">Experience & Capabilities</p>
                 </div>
 
-                {/* THE FIX: Download sound restored! */}
+                {/* Download sound restored! */}
                 <a
                   href="/AndresHernandez_Web-Developer-Resume.pdf"
                   download="AndresHernandez_Web-Developer-Resume.pdf"
@@ -340,7 +348,7 @@ export default function HomeHub() {
                   Download Original PDF
                 </a>
               </div>
-
+              {/* Skills */}
               <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
                 <div className="lg:col-span-4 space-y-8">
                   <div>
@@ -394,9 +402,37 @@ export default function HomeHub() {
                   </div>
                 </div>
               </div>
-              <div className="mt-12 flex justify-end pt-6 border-t border-white/10">
-                <button onClick={() => { playBack(); setIsResumeOpen(false); }} className="rounded-full border border-white/20 bg-white/5 px-8 py-3 text-sm font-medium text-white transition-colors hover:bg-white/10 cursor-pointer">Close Resume</button>
+              {/* Buttons */}
+              <div className="mt-12 pt-6 border-t border-white/10 grid grid-cols-2 gap-4">
+                {/* Left Column: View About Me */}
+                <div className="flex justify-center">
+                  <button
+                    onClick={() => {
+                      playModalOpen();
+                      setIsResumeOpen(false);
+                      setHubIndex(0);
+                      setIsAboutOpen(true);
+                    }}
+                    className="rounded-full border border-teal-500/50 bg-teal-500/10 px-6 py-2 text-sm font-medium text-teal-400 transition-colors hover:bg-teal-500/20 cursor-pointer"
+                  >
+                    View About Me
+                  </button>
+                </div>
+
+                {/* Right Column: Close Resume */}
+                <div className="flex justify-center">
+                  <button
+                    onClick={() => {
+                      playBack();
+                      setIsResumeOpen(false);
+                    }}
+                    className="rounded-full border border-white/20 bg-white/5 px-8 py-3 text-sm font-medium text-white transition-colors hover:bg-white/10 cursor-pointer"
+                  >
+                    Close Resume
+                  </button>
+                </div>
               </div>
+
             </motion.div>
           </motion.div>
         )}
@@ -405,20 +441,20 @@ export default function HomeHub() {
         <ContactModal
           isOpen={isContactOpen}
           onClose={() => { playBack(); setIsContactOpen(false); }}
-          onOpenProjects={() => { 
-            setIsContactOpen(false); 
-            setHubIndex(1); 
-            handleOpenCarousel(); 
+          onOpenProjects={() => {
+            setIsContactOpen(false);
+            setHubIndex(1);
+            handleOpenCarousel();
           }}
-          onOpenResume={() => { 
-            setIsContactOpen(false); 
-            setHubIndex(3); 
-            setIsResumeOpen(true); 
+          onOpenResume={() => {
+            setIsContactOpen(false);
+            setHubIndex(3);
+            setIsResumeOpen(true);
           }}
-          onOpenAbout={() => { 
-            setIsContactOpen(false); 
-            setHubIndex(0); 
-            setIsAboutOpen(true); 
+          onOpenAbout={() => {
+            setIsContactOpen(false);
+            setHubIndex(0);
+            setIsAboutOpen(true);
           }}
         />
       </AnimatePresence>
