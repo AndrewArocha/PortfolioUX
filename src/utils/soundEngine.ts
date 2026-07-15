@@ -22,7 +22,7 @@ const createAudio = (src: string | string[], volume: number = 1, loop: boolean =
 
 // --- 1. INITIALIZE AUDIO FILES ---
 const startSounds = createAudio(['/audio/Start1.mp3', '/audio/Start2.mp3'], 0.6);
-// FIXED: Matched to your exact screenshot naming
+
 const modalOpenSounds = createAudio(['/audio/OpenModal1.mp3', '/audio/OpenModal2.mp3'], 0.5); 
 
 const typewriter = createAudio('/audio/Typewriter.mp3', 0.5, true); 
