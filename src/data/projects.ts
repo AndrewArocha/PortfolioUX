@@ -21,10 +21,12 @@ const projects: Project[] = [
             '/AroundTheWorld5.png',
 
         description:
-            'World Gallery is a web application that allows users to edit their profile information and manage a gallery of image cards. Users can add new cards, remove cards, like cards, and preview images in modal windows. The project uses object-oriented programming principles with reusable classes for cards, popups, validation, and user information management.',
+            'World Gallery is a web application that allows users to edit their profile information and manage a gallery of image cards. Users can add new cards, remove cards, like cards, and preview images in modal windows. The project uses object-oriented programming principles with reusable classes for cards, popups, validation, and user information management. The user interface is component-based, utilizing declarative rendering and React state management to create a faster, more seamless user experience.',
 
         stack: [
-            'javascript',
+            'react',
+            'vite',
+            'tailwind',
             'typescript',
             'node',
             'html',
@@ -32,6 +34,7 @@ const projects: Project[] = [
         ],
 
         gallery: [
+            '/AroundTheWorld.jpeg', // Hero Image
             '/AroundTheWorld5.png', // Card Full View Modal
             '/AroundTheWorld2.png', // Update Profile Pic Modal
             '/AroundTheWorld3.png', // Update Profile Info Modal
@@ -40,7 +43,7 @@ const projects: Project[] = [
         ],
 
         githubUrl: 'https://github.com/AndrewArocha/web_project_around_es',
-        liveDemoUrl: '',
+        liveDemoUrl: 'https://web-project-around-react-six.vercel.app/',
     },
 
     {
