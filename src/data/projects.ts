@@ -17,11 +17,38 @@ const projects: Project[] = [
         id: 1,
         title: 'Around The World',
         tagline: 'Adventure far. Discover more.',
-        image:
-            '/AroundTheWorld5.png',
+        image: '/projects/around-gallery.webp',
 
         description:
-            'World Gallery is a web application that allows users to edit their profile information and manage a gallery of image cards. Users can add new cards, remove cards, like cards, and preview images in modal windows. The project uses object-oriented programming principles with reusable classes for cards, popups, validation, and user information management. The user interface is component-based, utilizing declarative rendering and React state management to create a faster, more seamless user experience.',
+            'A full-stack photo gallery where users can create an account, edit their profile, and collect photos of places they’ve visited. The React client supports adding, liking, and previewing photos. An Express API uses JWT authentication and stores profiles and cards in MongoDB.',
+
+        stack: [
+            'react',
+            'vite',
+            'typescript',
+            'node',
+            'mongodb',
+            'css'
+        ],
+
+        gallery: [
+            '/projects/around-gallery.webp',
+            '/projects/around-photo.webp',
+            '/projects/around-sign-up.webp',
+        ],
+
+        githubUrl: 'https://github.com/AndrewArocha/web_project_around_full',
+        liveDemoUrl: 'https://web-project-around-full-v56n.vercel.app/',
+    },
+
+    {
+        id: 2,
+        title: 'EVEO BDC',
+        tagline: 'Reporting and operations for automotive dealerships.',
+        image: '/projects/eveo-home.webp',
+
+        description:
+            'A multi-tenant operations platform for automotive Business Development Centers. Dealership teams can manage customers, leads, appointments, and showroom visits, then review performance with KPI reports. A TypeScript API stores records in MongoDB and scopes access by dealership and store.',
 
         stack: [
             'react',
@@ -29,76 +56,45 @@ const projects: Project[] = [
             'tailwind',
             'typescript',
             'node',
-            'html',
-            'css'
+            'mongodb',
         ],
 
         gallery: [
-            '/AroundTheWorld.jpeg', // Hero Image
-            '/AroundTheWorld5.png', // Card Full View Modal
-            '/AroundTheWorld2.png', // Update Profile Pic Modal
-            '/AroundTheWorld3.png', // Update Profile Info Modal
-            '/AroundTheWorld4.png', // New Card Modal
-            '/AroundTheWorld1.png' // Gallery View
+            '/projects/eveo-home.webp',
+            '/projects/eveo-pricing.webp',
+            '/projects/eveo-register.webp',
         ],
 
-        githubUrl: 'https://github.com/AndrewArocha/web_project_around_es',
-        liveDemoUrl: 'https://web-project-around-react-six.vercel.app/',
+        githubUrl: 'https://github.com/AndrewArocha/project-eveo-bdc',
+        liveDemoUrl: 'https://project-eveo-bdc-stage.vercel.app/',
     },
 
     {
-        id: 2,
-        title: 'EVEO INC Report Hub',
-        tagline: 'Data-driven insights for BDC.',
-        image:
-            '/BDCReportMaker1.png',
+        id: 3,
+        title: 'Patisserie Café',
+        tagline: 'A French-American café storefront and online ordering.',
+        image: '/projects/patisserie-home.webp',
 
         description:
-            'Eveo Hub is a premium, multi-tenant Business Development Center (BDC) reporting workspace designed specifically for automotive dealerships. Built to replace cluttered spreadsheets and uninspired SaaS dashboards. It allows BDC managers and store owners to securely compile, analyze, and share critical workflow metrics across multiple dealership locations.',
+            'A full-stack storefront for a French-American café on New York’s Upper West Side. Guests can browse the menu and build an order, then pay through Stripe Checkout. Customers can sign in to see their order history.',
 
         stack: [
             'react',
             'vite',
             'tailwind',
             'typescript',
+            'node',
+            'mongodb',
         ],
 
         gallery: [
-            '/BDCReportMaker1.png', // Hero IMG
-            '/BDCReportMaker2.png', // Report Type Selector
-            '/BDCReportMaker3.png', // Report View
-            '/BDCReportMaker4.png', // Report Loading State
-            '/BDCReportMaker5.png', // Compiled State
-            '/BDCReportMaker6.png', // Compiled Preview
-            '/BDCReportMaker7.png', // Compiled Extended Preview
-            '/BDCReportMaker8.png',
+            '/projects/patisserie-home.webp',
+            '/projects/patisserie-menu.webp',
+            '/projects/patisserie-order.webp',
         ],
 
-        githubUrl: 'https://github.com/AndrewArocha/BDC-Report-maker/tree/vite-tailwind-refactor',
-        liveDemoUrl: '',
-    },
-
-    {
-        id: 3,
-        title: 'Triple Espresso',
-        image:
-            '/CoffeeShop1.png',
-
-        description:
-            'A responsive, semantic HTML5 and CSS3 landing page designed for a specialty coffee shop. Focuses on accessibility, form validation, and core web design fundamentals without relying on heavy JavaScript frameworks.',
-
-        stack: [
-            'html',
-            'css',
-        ],
-
-        gallery: [
-            '/CoffeeShop1.png', // Hero image
-            '/CoffeeShop2.png' // Forms 
-        ],
-
-        githubUrl: 'https://github.com/AndrewArocha/web_project_coffeeshop_es',
-        liveDemoUrl: 'https://andrewarocha.github.io/web_project_coffeeshop_es/',
+        githubUrl: 'https://github.com/AndrewArocha/patisserie-cafe',
+        liveDemoUrl: 'https://www.patisseriecafe.co/',
     },
 ];
 
