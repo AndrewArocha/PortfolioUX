@@ -1,63 +1,35 @@
-# Andrés Hernández | UI Engineer Portfolio
+# PortfolioUX
 
-A cinematic, highly interactive portfolio built to mimic a modern, tactile operating system. This project serves as both a showcase of my frontend engineering capabilities and a demonstration of deep UX philosophy, featuring custom physics, spatial audio feedback, and seamless state-driven navigation.
+An interactive portfolio by Andrés Hernández, built around a desktop-inspired interface for exploring projects. Visitors can browse an animated carousel, open project showcases, and follow external links without losing their place.
 
-**[Live Portfolio OS](https://portfolio-ux-beta.vercel.app/)**
+[Open the portfolio](https://portfolio-ux-beta.vercel.app/)
 
-[![Portfolio Logo](./public/mainLogoAccent.svg)](https://portfolio-ux-beta.vercel.app/)
+## What to explore
 
-## 🚀 Key Features
+- **Navigation and gestures:** The carousel uses spring animations, and showcase overlays support swipe-to-close on mobile.
+- **Sound:** A shared sound engine plays UI cues after user interaction.
+- **Time display:** Live clocks show the visitor’s local time alongside the time in Medellín.
 
-* **Custom Sound Engine:** A centralized, global audio manager that syncs tactile UI sounds (typewriter boot sequence, mechanical dial clicks, ambient deep-space hums) to user interactions.
-* **Framer Motion Physics:** Complex gesture controls including mobile swipe-to-close overlays, spring-physics carousel tracking, and interactive 3D revolving galleries.
-* **4-Stage Boot Sequence:** A cinematic loading experience that guarantees asset extraction and bypasses strict browser autoplay policies for audio synchronization.
-* **Non-Destructive Routing:** Custom built `RedirectModal` logic with soft-retention timers that allow users to preview external links while maintaining the portfolio's state in the background.
-* **Dual-Timezone Synchronization:** Live, ticking clocks comparing the user's local system time to my operating base in Medellín, complete with reactive day/night visual states.
+**Stack:** React 19, TypeScript, Vite, Tailwind CSS, and Motion (`framer-motion`).
 
-## 🛠️ Tech Stack
+## Run locally
 
-* **Core:** React 18 + Vite
-* **Language:** TypeScript
-* **Styling:** Tailwind CSS
-* **Animation:** Framer Motion
-* **State Management:** React Context API + Custom Hooks (`useInteraction`, `useCarouselControls`)
+Use Node.js 24 and npm.
 
-## 📂 Project Architecture
-
-The application is structured as a Single Page Application (SPA), utilizing a master `App.tsx` controller to securely mount and unmount "layers" (Carousel, Hub, Showcase) without relying on traditional URL routing.
-
-```text
-src/
-├── components/          # Feature-grouped component architecture
-│   ├── Card/            # Interactive carousel items
-│   ├── HomeHub/         # Master UI dashboard and layout
-│   ├── Modals/          # Global overlays (Contact, Resume, Redirect)
-│   ├── ProjectShowCase/ # Deep-dive view for specific repositories
-│   └── UI/              # Boot sequence and asset managers
-├── context/             # Global state (InteractionContext)
-├── data/                # Hardcoded tech stack and project payloads
-├── hooks/               # Extracted logic (useImagePreloader, useHubControls)
-└── utils/               # Global engines (soundEngine.ts)
+```sh
+git clone https://github.com/AndrewArocha/PortfolioUX.git
+cd PortfolioUX
+npm ci
+npm run dev
 ```
 
-## 💻 Local Development
+Open the local URL printed by Vite. Run `npm run lint` to check the source or `npm run build` to create a production build.
 
-To run this project locally:
+## Code map
 
-Clone the repository:
-git clone [https://github.com/AndrewArocha/portfolio-os.git](https://github.com/AndrewArocha/portfolio-os.git)
+- [`src/components/`](./src/components/) — carousel, home hub, overlays, and project showcases.
+- [`src/hooks/`](./src/hooks/) — carousel and showcase controls, plus asset preloading.
+- [`src/context/InteractionContext.tsx`](./src/context/InteractionContext.tsx) — shared interaction state.
+- [`src/utils/soundEngine.ts`](./src/utils/soundEngine.ts) — UI and ambient audio.
 
-Navigate into the directory:
-cd portfolio-os
-
-Install dependencies:
-npm install
-
-npm run dev
-
-## 📬 Contact & Links
-LinkedIn: [Andrés Hernández](https://www.linkedin.com/in/andres-hernandez-333b59282)
-
-GitHub: [AndrewArocha](https://github.com/AndrewArocha)
-
-Built with attention to detail and visibility across all devices.
+[More projects and contact details](https://github.com/AndrewArocha)
