@@ -153,7 +153,7 @@ export default function HomeHub() {
               <div className="relative z-10">
                 <p className={`text-[10px] md:text-sm font-medium tracking-widest uppercase mb-2 md:mb-4 transition-colors ${hubIndex === 0 ? "text-teal-300" : "text-teal-400/80"}`}>UI Engineer & Frontend Developer</p>
                 <h1 className="text-4xl sm:text-5xl lg:text-7xl font-bold tracking-tighter text-white mb-1 md:mb-2 leading-[0.9]">Andrés <br /> <span className="text-white/50">Hernández</span></h1>
-                <p className="hidden sm:block max-w-md text-white/40 mt-3 md:mt-4 text-xs md:text-sm leading-relaxed">Translating a decade of leadership and operations into scalable, highly interactive web applications. Click to access personnel files.</p>
+                <p className="hidden sm:block max-w-md text-white/40 mt-3 md:mt-4 text-xs md:text-sm leading-relaxed">React and TypeScript applications informed by hands-on experience in dealership operations. TripleTen Web Developer graduate, November 2026.</p>
               </div>
             </motion.button>
 
@@ -256,9 +256,9 @@ export default function HomeHub() {
                 <div className="flex-1">
                   <h2 className="hidden md:block text-4xl font-bold tracking-tight text-white mb-6">The Human <span className="text-teal-400">Layer</span></h2>
                   <div className="space-y-3 md:space-y-4 text-white/70 leading-relaxed text-xs md:text-sm">
-                    <p>I am transitioning into frontend development after over 10 years of experience in leadership, operations, and customer service. Leading teams and managing high-volume BDC operations taught me deep empathy and the importance of user-centric systems.</p>
-                    <p>I am naturally nonchalant and unbothered by high-stress environments. I don't let anxiety dictate my pace; instead, I hyperfocus on complex issues until they are solved. People often come to me for advice because I handle frustration well and operate at a quick tempo without rushing others.</p>
-                    <p>I fully embrace the "lazy programmer" mentality: if a workflow takes too much manual effort, I will engineer an automated system so we never have to do it manually again. Endless optimization lights a fire in my soul.</p>
+                    <p>I am a front-end developer working with React, TypeScript, and Tailwind CSS. I completed TripleTen's Web Developer program on November 13, 2026, with training in React, REST APIs, Node.js, Express, MongoDB, and authentication.</p>
+                    <p>I joined EVEO as a BDC agent in 2021 and was promoted to General Manager in 2025. Coordinating dealership teams and customer follow-up helps me understand the workflows behind the interfaces I build.</p>
+                    <p>My selected projects include EVEO BDC, a dealership operations platform in active development; Patisserie Café, a storefront with SpotOn hosted ordering; and a full-stack photo gallery. I am interested in remote front-end and React development opportunities.</p>
                     <p>When I'm off the clock, I'm an avid gamer (which heavily inspired this interface), I play the guitar, maintain a deep appreciation for nature, and occasionally unwind to an indie or classical music playlist.</p>
                   </div>
                 </div>
@@ -345,7 +345,7 @@ export default function HomeHub() {
                   className="flex items-center gap-3 rounded-full border border-orange-500/50 bg-orange-500/10 px-6 py-3 text-sm font-medium text-orange-400 transition-colors hover:bg-orange-500/20 w-fit"
                 >
                   <svg viewBox="0 0 24 24" className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" /><polyline points="7 10 12 15 17 10" /><line x1="12" y1="15" x2="12" y2="3" /></svg>
-                  Download Original PDF
+                  Download Updated CV
                 </a>
               </div>
               {/* Skills */}
@@ -362,7 +362,7 @@ export default function HomeHub() {
                   <div>
                     <h3 className="text-lg font-semibold text-white mb-4 flex items-center gap-2"><span className="w-2 h-2 rounded-full bg-orange-400" /> Architecture & Tools</h3>
                     <div className="flex flex-wrap gap-2">
-                      {["Vite", "Node.js", "REST APIs", "Git / GitHub", "Responsive Design", "Accessibility"].map((skill) => (
+                      {["Vite", "Node.js", "Express", "MongoDB", "REST APIs", "JWT Authentication", "Git / GitHub", "Responsive Design"].map((skill) => (
                         <span key={skill} className="px-3 py-1.5 rounded-full border border-white/10 bg-white/5 text-sm text-white/80">{skill}</span>
                       ))}
                     </div>
@@ -375,29 +375,35 @@ export default function HomeHub() {
                       ))}
                     </div>
                   </div>
+                  <div>
+                    <h3 className="text-lg font-semibold text-white mb-3">Education</h3>
+                    <p className="text-sm text-white/80">TripleTen · Web Developer</p>
+                    <p className="text-sm text-white/60 mt-2">January - November 2026. Completed November 13, 2026.</p>
+                    <p className="text-sm text-white/60 mt-2">Certificate: 202601WDES0004474</p>
+                  </div>
                 </div>
                 <div className="lg:col-span-8">
                   <div className="relative border-l border-white/10 pl-8 space-y-10">
                     <div className="relative">
                       <div className="absolute -left-10.25 top-1.5 h-5 w-5 rounded-full border-4 border-[#0f0f0f] bg-teal-400" />
                       <span className="text-xs font-bold tracking-widest text-teal-400 uppercase">2025 — Present</span>
-                      <h4 className="text-2xl font-bold text-white mt-1">General Manager & Frontend Eng.</h4>
-                      <p className="text-white/50 text-sm font-medium mb-3">EVEO INC. / Project BDC</p>
-                      <p className="text-white/70 text-sm leading-relaxed">Leading BDC operations managing 1000+ leads while simultaneously engineering data-driven frontend frameworks. Built a custom reporting web app using React and TypeScript that automated data visualization and reduced manual calculation time by 30%.</p>
+                      <h4 className="text-2xl font-bold text-white mt-1">General Manager</h4>
+                      <p className="text-white/50 text-sm font-medium mb-3">EVEO Inc. / NJ Auto Xchange</p>
+                      <p className="text-white/70 text-sm leading-relaxed">Lead BDC operations, coordinate dealership teams, and track leads, appointments, and performance. Daily reporting needs inform my EVEO BDC development project.</p>
                     </div>
                     <div className="relative">
                       <div className="absolute -left-10.25 top-1.5 h-5 w-5 rounded-full border-4 border-[#0f0f0f] bg-orange-400" />
-                      <span className="text-xs font-bold tracking-widest text-orange-400 uppercase">2023 — 2024</span>
-                      <h4 className="text-xl font-bold text-white mt-1">Business Development Coordinator</h4>
+                      <span className="text-xs font-bold tracking-widest text-orange-400 uppercase">2021 — 2024</span>
+                      <h4 className="text-xl font-bold text-white mt-1">BDC Agent</h4>
                       <p className="text-white/50 text-sm font-medium mb-3">EVEO INC.</p>
-                      <p className="text-white/70 text-sm leading-relaxed">Sourced and qualified massive lead volumes, utilizing analytical frameworks to achieve a 60% lead-to-appointment ratio and an 80% show-rate. Optimized cross-departmental communication and engagement strategies.</p>
+                      <p className="text-white/70 text-sm leading-relaxed">Qualified leads, scheduled appointments, and coordinated customer follow-up. Promoted to General Manager in 2025.</p>
                     </div>
                     <div className="relative">
                       <div className="absolute -left-10.25 top-1.5 h-5 w-5 rounded-full border-4 border-[#0f0f0f] bg-white/30" />
                       <span className="text-xs font-bold tracking-widest text-white/50 uppercase">2018 — 2019</span>
                       <h4 className="text-xl font-bold text-white mt-1">Collections Manager</h4>
                       <p className="text-white/50 text-sm font-medium mb-3">Grand Teton Professionals</p>
-                      <p className="text-white/70 text-sm leading-relaxed">Managed compliance teams and developed algorithmic strategies in Excel to track KPIs, successfully improving collection rates by 20% before company shutdown.</p>
+                      <p className="text-white/70 text-sm leading-relaxed">Managed collections and compliance teams, developed account-recovery strategies, and used Excel to track performance.</p>
                     </div>
                   </div>
                 </div>

@@ -20,7 +20,7 @@ const projects: Project[] = [
         image: '/projects/around-gallery.webp',
 
         description:
-            'A full-stack photo gallery where users can create an account, edit their profile, and collect photos of places they’ve visited. The React client supports adding, liking, and previewing photos. An Express API uses JWT authentication and stores profiles and cards in MongoDB.',
+            'I built a full-stack photo gallery with registration, sign-in, profile editing, and image cards. My work connects a React and TypeScript client to an Express REST API with JWT authentication and MongoDB persistence. The result is a deployed gallery where users can add, like, preview, and delete their photos.',
 
         stack: [
             'react',
@@ -48,7 +48,7 @@ const projects: Project[] = [
         image: '/projects/eveo-home.webp',
 
         description:
-            'A multi-tenant operations platform for automotive Business Development Centers. Dealership teams can manage customers, leads, appointments, and showroom visits, then review performance with KPI reports. A TypeScript API stores records in MongoDB and scopes access by dealership and store.',
+            'I developed EVEO BDC from an appointment-reporting prototype, drawing on my dealership operations experience. I built React and TypeScript workspaces connected to an Express and MongoDB API for leads, appointments, showroom activity, and store-scoped access. The platform is in active development; the live link opens its staging preview.',
 
         stack: [
             'react',
@@ -76,7 +76,7 @@ const projects: Project[] = [
         image: '/projects/patisserie-home.webp',
 
         description:
-            'A full-stack storefront for a French-American café on New York’s Upper West Side. Guests can browse the menu and build an order, then pay through Stripe Checkout. Customers can sign in to see their order history.',
+            'I built a full-stack storefront for a French-American café in New York, using React, TypeScript, Express, and MongoDB. My work includes menu browsing, customer accounts, and catering requests. The live site directs online orders and payment to SpotOn hosted checkout; café accounts retain historical order records.',
 
         stack: [
             'react',
